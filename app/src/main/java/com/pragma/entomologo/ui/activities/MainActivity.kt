@@ -1,4 +1,4 @@
-package com.pragma.entomologo
+package com.pragma.entomologo.ui.activities
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
