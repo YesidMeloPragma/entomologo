@@ -2,7 +2,9 @@
 .gradle
 /local.properties
 /.idea/caches
+/.idea/sonarlint/
 /.idea/libraries
+/.idea/sonarlint
 /.idea/modules.xml
 /.idea/workspace.xml
 /.idea/navEditor.xml
