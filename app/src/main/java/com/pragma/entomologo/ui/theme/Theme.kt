@@ -16,25 +16,57 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = PrimaryDark,
+    secondary = SecundaryDark,
+    tertiary = TertiaryDark,
+    error = ErrorDark,
+    background = BackgroundDark,
+    surfaceVariant = SurfaceVariantDark,
+    onPrimary = OnPrimaryDark,
+    onSecondary = OnSecundaryDark,
+    onTertiary = OnTertiaryDark,
+    onError = OnErrorDark,
+    onBackground = OnBackgroundDark,
+    onSurfaceVariant = OnSurfaceVariantDark,
+    primaryContainer = PrimaryContainerDark,
+    secondaryContainer = SecundaryContainerDark,
+    tertiaryContainer = TertiaryContainerDark,
+    errorContainer = ErrorContainerDark,
+    surface = SurfaceDark,
+    outline = OutlineDark,
+    onPrimaryContainer = OnPrimaryContainerDark,
+    onSecondaryContainer = OnSecundaryContainerDark,
+    onTertiaryContainer = OnTertiaryContainerDark,
+    onErrorContainer = OnErrorContainerDark,
+    onSurface = OnSurfaceDark,
+    outlineVariant = OutlineVariantDark
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    primary = PrimaryLigth,
+    secondary = SecundaryLigth,
+    tertiary = TertiaryLigth,
+    error = ErrorLigth,
+    background = BackgroundLigth,
+    surfaceVariant = SurfaceVariantLigth,
+    onPrimary = OnPrimaryLigth,
+    onSecondary = OnSecundaryLigth,
+    onTertiary = OnTertiaryLigth,
+    onError = OnErrorLigth,
+    onBackground = OnBackgroundLigth,
+    onSurfaceVariant = OnSurfaceVariantLigth,
+    primaryContainer = PrimaryContainerLigth,
+    secondaryContainer = SecundaryContainerLigth,
+    tertiaryContainer = TertiaryContainerLigth,
+    errorContainer = ErrorContainerLigth,
+    surface = SurfaceLigth,
+    outline = OutlineLigth,
+    onPrimaryContainer = OnPrimaryContainerLigth,
+    onSecondaryContainer = OnSecundaryContainerLigth,
+    onTertiaryContainer = OnTertiaryContainerLigth,
+    onErrorContainer = OnErrorContainerLigth,
+    onSurface = OnSurfaceLigth,
+    outlineVariant = OutlineVariantLigth
 )
 
 @Composable
