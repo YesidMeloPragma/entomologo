@@ -3,7 +3,7 @@ package com.pragma.entomologo.ui.theme
 import androidx.compose.ui.graphics.Color
 
 //region ligth colors
-val PrimaryLigth = Color(0xff00d631)
+val PrimaryLigth = Color(0xff006d31)
 val SecundaryLigth = Color(0xff506351)
 val TertiaryLigth = Color(0xff39656d)
 val ErrorLigth = Color(0xffBA1a1a)
