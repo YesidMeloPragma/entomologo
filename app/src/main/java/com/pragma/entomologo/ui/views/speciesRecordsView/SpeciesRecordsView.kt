@@ -1,6 +1,7 @@
 package com.pragma.entomologo.ui.views.speciesRecordsView
 
 import android.content.res.Configuration
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,23 +12,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.navigation.NavHostController
-import com.pragma.entomologo.R
 import com.pragma.entomologo.logic.models.CounterRecordInsectModel
 import com.pragma.entomologo.logic.models.GeoLocationModel
 import com.pragma.entomologo.logic.models.InsectModel
-import com.pragma.entomologo.ui.navigation.Routes
 import com.pragma.entomologo.ui.theme.EntomologoTheme
-import com.pragma.entomologo.ui.utils.extentions.getBitmap
 import com.pragma.entomologo.ui.views.app.NewCounterView
+import com.pragma.entomologo.ui.views.app.imageProfile.ImageProfileView
+import com.pragma.entomologo.ui.views.app.imageProfile.viewModel.ImageProfileViewModel
 import com.pragma.entomologo.ui.views.customs.dialogs.progressDialog.ProgressDialog
-import com.pragma.entomologo.ui.views.customs.images.CustomCircularImage
 import com.pragma.entomologo.ui.views.speciesRecordsView.viewModel.SpeciesRecordsViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -56,6 +53,7 @@ fun SpeciesRecordsViewPreview() {
             //endregion
 
             val uiState = MutableStateFlow(value =SpeciesRecordsViewModel.StatusUISpeciesRecord(list = list))
+            val uiStateImageProfile = MutableStateFlow(value = ImageProfileViewModel.ImageProfileUIState())
 
             SpeciesRecordsView(modifier = Modifier.constrainAs(constraintsId) {
                 bottom.linkTo(parent.bottom)
@@ -69,7 +67,20 @@ fun SpeciesRecordsViewPreview() {
                     override fun getStateUI(): StateFlow<StatusUISpeciesRecord> = uiState
 
                     override fun loadListCounters() { Log.i("err", "") }
-                }
+                },
+                imageProfileViewModel = object : ImageProfileViewModel() {
+                    override fun loadImage() {
+                        Log.i("Informacion", "accion")
+                    }
+
+                    override fun setImageSelected(bitmap: Bitmap?) {
+                        Log.i("Informacion", "accion")
+                    }
+
+                    override fun getStateUI(): StateFlow<ImageProfileUIState> = uiStateImageProfile
+                },
+                navigateToImageProfile = {},
+                navigateToRegisterNewInsect = {}
             )
         }
     }
@@ -79,7 +90,9 @@ fun SpeciesRecordsViewPreview() {
 fun SpeciesRecordsView(
     modifier: Modifier,
     viewModel: SpeciesRecordsViewModel,
-    navHostController: NavHostController? = null
+    imageProfileViewModel: ImageProfileViewModel,
+    navigateToImageProfile: () -> Unit,
+    navigateToRegisterNewInsect: () -> Unit
 ) {
 
     //region variables
@@ -97,16 +110,15 @@ fun SpeciesRecordsView(
         val guidelineImageStart = createGuidelineFromStart(fraction = 0.06f)
         val guidelineImageTop = createGuidelineFromTop(fraction = 0.07f)
 
-        CustomCircularImage(
+        ImageProfileView(
             modifier = Modifier.constrainAs(imageId) {
                 end.linkTo(guidelineImageEnd)
                 start.linkTo(guidelineImageStart)
                 top.linkTo(guidelineImageTop)
                 width = Dimension.fillToConstraints
             },
-            placeHolder = R.mipmap.avatar,
-            contentScale = ContentScale.FillHeight,
-            bitmap = stateUI.imageBase64?.getBitmap()
+            viewModel = imageProfileViewModel,
+            action = navigateToImageProfile
         )
         //endregion
 
@@ -127,9 +139,7 @@ fun SpeciesRecordsView(
                     width = Dimension.fillToConstraints
                     height = Dimension.fillToConstraints
                 },
-                onClick = {
-                    navHostController?.navigate(Routes.REGISTER_NEW_INSECT.route)
-                }
+                onClick = navigateToRegisterNewInsect
             )
             //endregion
         } else {
@@ -148,9 +158,7 @@ fun SpeciesRecordsView(
                     width = Dimension.fillToConstraints
                     height = Dimension.fillToConstraints
                 },
-                onClick = {
-                    navHostController?.navigate(Routes.REGISTER_NEW_INSECT.route)
-                }
+                onClick = navigateToRegisterNewInsect
             )
             //endregion
 

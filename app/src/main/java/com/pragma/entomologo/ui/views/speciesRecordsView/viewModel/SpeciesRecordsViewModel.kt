@@ -14,8 +14,7 @@ abstract class SpeciesRecordsViewModel : ViewModel() {
 
     data class StatusUISpeciesRecord(
         val loading :  StatusLoading = StatusLoading.PRELOAD,
-        val list: List<CounterRecordInsectModel> = emptyList(),
-        val imageBase64: String? = null
+        val list: List<CounterRecordInsectModel> = emptyList()
     )
 
     abstract fun getStateUI() : StateFlow<StatusUISpeciesRecord>

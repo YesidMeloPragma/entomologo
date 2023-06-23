@@ -2,24 +2,17 @@
 package com.pragma.entomologo.ui.views.loadImageProfile
 
 import android.Manifest
-import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -34,12 +27,13 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.core.content.ContextCompat
 import com.pragma.entomologo.R
 import com.pragma.entomologo.ui.theme.EntomologoTheme
 import com.pragma.entomologo.ui.views.customs.buttons.CustomRoundedButtonsWithElevation
 import com.pragma.entomologo.ui.views.customs.dialogs.progressDialog.ProgressDialog
 import com.pragma.entomologo.ui.views.customs.images.CustomCircularImage
+import com.pragma.entomologo.ui.views.requestPermisions.CheckRequestPermission
+import com.pragma.entomologo.ui.views.requestPermisions.hasPermissions
 
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO, device = Devices.PHONE)
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, device = Devices.PHONE)
@@ -57,8 +51,8 @@ fun LoadImageProfileViewPreview() {
                 top.linkTo(parent.top)
                 width = Dimension.fillToConstraints
             },
-                imageSelected = {},
                 navigateToProfile = {},
+                navigateToListRecord = {},
                 isPreview = true
             )
         }
@@ -68,8 +62,8 @@ fun LoadImageProfileViewPreview() {
 @Composable
 fun LoadImageProfileView(
     modifier: Modifier,
-    imageSelected: (Bitmap?)->Unit,
-    navigateToProfile: ()->Unit,
+    navigateToProfile: ((Bitmap?)->Unit)? = null,
+    navigateToListRecord: ((Bitmap?) -> Unit)? = null,
     isPreview: Boolean = false
 ) {
     //region variables
@@ -133,8 +127,8 @@ fun LoadImageProfileView(
                     placeHolder = R.mipmap.avatar,
                     contentScale = ContentScale.FillHeight
                 )
-                imageSelected.invoke(bitmapResponse)
-                navigateToProfile.invoke()
+                navigateToProfile?.invoke(bitmapResponse)
+                navigateToListRecord?.invoke(bitmapResponse)
             }
         }
 
@@ -195,66 +189,7 @@ fun LoadImageProfileView(
 }
 
 //region request permission
-@Composable
-private fun CheckRequestPermission(
-    isPreview: Boolean = false,
-    showDialog: MutableState<Boolean>,
-    permissions: Array<String>
-) {
-    if(isPreview) return
 
-    if (hasPermissions(context = LocalContext.current, permissions = permissions)) return
-
-    RequestTheNecessaryPermits(showDialog = showDialog)
-}
-
-fun hasPermissions(context: Context, permissions: Array<String>): Boolean {
-    for (permission in permissions) {
-        val permissionStatus = ContextCompat.checkSelfPermission(context, permission)
-        if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
-            return false
-        }
-    }
-    return true
-}
-
-@Composable
-fun RequestTheNecessaryPermits(
-    showDialog: MutableState<Boolean>,
-) {
-    if (!showDialog.value) return
-
-    val context = LocalContext.current
-
-    AlertDialog(
-        onDismissRequest = { /* No hacer nada */ },
-        title = { Text("Permisos Multimedia") },
-        text = { Text("Estos permisos son necesarios para poder capturar imagenes desde tu galeria para vincularla al perfil") },
-        confirmButton = {
-            Button(
-                onClick = {
-                    showDialog.value = false
-
-                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                    val uri = Uri.fromParts("package", context.applicationContext.packageName, null)
-                    intent.data = uri
-                    context.startActivity(intent)
-                }
-            ) {
-                Text("habilitar")
-            }
-        },
-        dismissButton = {
-            Button(
-                onClick = {
-                    showDialog.value = false
-                }
-            ) {
-                Text("cancelar")
-            }
-        }
-    )
-}
 
 private fun getPermissions(): Array<String> {
     return arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)

@@ -35,18 +35,28 @@ fun NavigationHandler(
             SpeciesRecordsView(
                 modifier = Modifier.fillMaxSize(),
                 viewModel = viewModelHandler.speciesRecordsViewModel,
-                navHostController = navHostController
+                imageProfileViewModel = viewModelHandler.imageProfileViewModel,
+                navigateToRegisterNewInsect = {
+                    navHostController.popBackStack(route = Routes.LIST_COUNTER_RECORDS.route, inclusive = false)
+                    navHostController.navigate(route = Routes.REGISTER_NEW_INSECT.route)
+                },
+                navigateToImageProfile = {
+                    navHostController.popBackStack(route = Routes.LIST_COUNTER_RECORDS.route, inclusive = false)
+                    navHostController.navigate(route = Routes.LOAD_IMAGE_PROFILE.route)
+                }
             )
         }
 
         composable(route = Routes.LOAD_IMAGE_PROFILE.route) {
             LoadImageProfileView(
                 modifier = Modifier.fillMaxSize(),
-                imageSelected = {
-                    viewModelHandler.registerEntomologyViewModel.setCurrentImageProfile(image = it)
-                },
                 navigateToProfile = {
                     navHostController.popBackStack(route = Routes.REGISTER_NEW_PROFILE.route, inclusive = false)
+                    viewModelHandler.registerEntomologyViewModel.setCurrentImageProfile(image = it)
+                },
+                navigateToListRecord = {
+                    navHostController.popBackStack(route = Routes.LIST_COUNTER_RECORDS.route, inclusive = false)
+                    viewModelHandler.imageProfileViewModel.setImageSelected(bitmap = it)
                 }
             )
         }

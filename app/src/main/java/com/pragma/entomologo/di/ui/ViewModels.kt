@@ -6,6 +6,8 @@ import com.pragma.entomologo.logic.usesCase.getAllInsectsUseCase.GetAllInsectsUs
 import com.pragma.entomologo.logic.usesCase.getImageProfileEntomologistUseCase.GetImageProfileEntomologistUseCase
 import com.pragma.entomologo.logic.usesCase.isEntomologistRegisteredUseCase.IsEntomologistRegisteredUseCase
 import com.pragma.entomologo.logic.usesCase.registerEntomologistUseCase.RegisterEntomologistUseCase
+import com.pragma.entomologo.ui.views.app.imageProfile.viewModel.ImageProfileViewModel
+import com.pragma.entomologo.ui.views.app.imageProfile.viewModel.ImageProfileViewModelImpl
 import com.pragma.entomologo.ui.views.formSpecieView.viewmodel.FormSpecieViewModel
 import com.pragma.entomologo.ui.views.formSpecieView.viewmodel.FormSpecieViewModelImpl
 import com.pragma.entomologo.ui.views.registerEntomologistView.viewModel.RegisterEntomologyViewModel
@@ -33,6 +35,13 @@ class ViewModels {
     )
 
     @Provides
+    fun provideImageProfileViewModel(
+        getImageProfileEntomologistUseCase: GetImageProfileEntomologistUseCase
+    ): ImageProfileViewModel = ImageProfileViewModelImpl(
+        getImageProfileEntomologistUseCase = getImageProfileEntomologistUseCase
+    )
+
+    @Provides
     fun providesRegisterEntomologyViewModel(
         registerEntomologistUseCase: RegisterEntomologistUseCase
     ): RegisterEntomologyViewModel = RegisterEntomologyViewModelImpl(
@@ -41,11 +50,9 @@ class ViewModels {
 
     @Provides
     fun provideSpeciesRecordsViewModel(
-        getAllCountersUseCase: GetAllCountersUseCase,
-        getImageProfileEntomologistUseCase: GetImageProfileEntomologistUseCase
+        getAllCountersUseCase: GetAllCountersUseCase
     ) : SpeciesRecordsViewModel = SpeciesRecordsViewModelImpl(
-        getAllCountersUseCase = getAllCountersUseCase,
-        getImageProfileEntomologistUseCase = getImageProfileEntomologistUseCase
+        getAllCountersUseCase = getAllCountersUseCase
     )
 
     @Provides
