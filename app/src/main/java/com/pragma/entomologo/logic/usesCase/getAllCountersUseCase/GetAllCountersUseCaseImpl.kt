@@ -29,7 +29,7 @@ class GetAllCountersUseCaseImpl @Inject constructor(
 
                     for (item in listCounters) {
                         item.insect = listInsects.find { it.id == item.insect.id } ?: InsectModel(specieName = "", urlPhoto = "", moreInformation = "")
-                        item.geoLocation = listGeoLocations.find { it.id == item.id }?: GeoLocationModel(lat = 0.0, lng = 0.0)
+                        item.geoLocation = listGeoLocations.find { it.id == item.geoLocation.id }?: GeoLocationModel(lat = 0.0, lng = 0.0)
                     }
                     emit(listCounters)
                 }

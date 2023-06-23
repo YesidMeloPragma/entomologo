@@ -1,6 +1,7 @@
 package com.pragma.entomologo.logic.datasources.geoLocationDatasource.localDatasource
 
 import com.pragma.entomologo.logic.datasources.geoLocationDatasource.mappers.convertToListGeoLocationModel
+import com.pragma.entomologo.logic.datasources.geoLocationDatasource.mappers.convertToGeoLocationEntity
 import com.pragma.entomologo.logic.models.GeoLocationModel
 import com.pragma.entomologo.sources.database.dao.GeoLocationDao
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +14,7 @@ class GeoLocationLocalDatasourceImpl @Inject constructor(
     private val geoLocationDao: GeoLocationDao
 ) : GeoLocationLocalDatasource {
     override fun deleteGeoLocation(geoLocationModel: GeoLocationModel): Flow<Boolean?> = flow {
-        geoLocationDao.deleteElement( geoLocationModel.convertToListGeoLocationModel() )
+        geoLocationDao.deleteElement( geoLocationModel.convertToGeoLocationEntity() )
         emit(true)
     }.flowOn(Dispatchers.IO)
 
@@ -26,12 +27,12 @@ class GeoLocationLocalDatasourceImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     override fun insertGeoLocation(geoLocationModel: GeoLocationModel): Flow<LongArray> = flow{
-        val ids = geoLocationDao.insertElement(geoLocationModel.convertToListGeoLocationModel())
+        val ids = geoLocationDao.insertElement(geoLocationModel.convertToGeoLocationEntity())
         emit(ids)
     }.flowOn(Dispatchers.IO)
 
     override fun updateGeoLocation(geoLocationModel: GeoLocationModel): Flow<Boolean> = flow {
-        geoLocationDao.updateElement(geoLocationModel.convertToListGeoLocationModel())
+        geoLocationDao.updateElement(geoLocationModel.convertToGeoLocationEntity())
         emit(true)
     }.flowOn(Dispatchers.IO)
 }

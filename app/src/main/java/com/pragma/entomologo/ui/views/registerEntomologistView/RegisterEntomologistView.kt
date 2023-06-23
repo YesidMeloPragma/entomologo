@@ -10,6 +10,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Devices
@@ -105,6 +107,7 @@ fun RegisterEntomologistView(
         stateUI = stateUI,
         navigateToListRecords = navigateToListRecords
     )
+    val name = rememberSaveable{ mutableStateOf("") }
     //endregion
 
     ConstraintLayout(modifier = modifier.background(color = MaterialTheme.colorScheme.secondaryContainer)) {
@@ -145,8 +148,11 @@ fun RegisterEntomologistView(
                 top.linkTo(imageProfileId.bottom, margin = 31.dp)
                 width = Dimension.fillToConstraints
             },
-            value = stateUI.name,
-            onValueChange = viewModel::setCurrentNameEntomologist,
+            value = name.value,
+            onValueChange = {
+                name.value = it
+                viewModel.setCurrentNameEntomologist(name = it)
+            },
             label = "Nombre"
         )
         //endregion

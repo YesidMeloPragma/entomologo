@@ -59,7 +59,8 @@ class ImageAppGalleryImpl constructor(
             image.compress(Bitmap.CompressFormat.JPEG, 100, out)
             out.flush()
             out.close()
-            file.path?:""
+            "$path/$fileName"
+            //file.path?:""
         } catch (e: Exception) {
             Log.e("err", "Surgio un error", e)
             ""

@@ -8,8 +8,10 @@ import com.pragma.entomologo.logic.usesCase.isEntomologistRegisteredUseCase.IsEn
 import com.pragma.entomologo.logic.usesCase.registerEntomologistUseCase.RegisterEntomologistUseCase
 import com.pragma.entomologo.ui.views.app.imageProfile.viewModel.ImageProfileViewModel
 import com.pragma.entomologo.ui.views.app.imageProfile.viewModel.ImageProfileViewModelImpl
-import com.pragma.entomologo.ui.views.formSpecieView.viewmodel.FormSpecieViewModel
-import com.pragma.entomologo.ui.views.formSpecieView.viewmodel.FormSpecieViewModelImpl
+import com.pragma.entomologo.ui.views.formSpecieView.viewModel.FormSpecieViewModel
+import com.pragma.entomologo.ui.views.formSpecieView.viewModel.FormSpecieViewModelImpl
+import com.pragma.entomologo.ui.views.loadImageProfile.viewModel.LoadImageProfileViewModel
+import com.pragma.entomologo.ui.views.loadImageProfile.viewModel.LoadImageProfileViewModelImpl
 import com.pragma.entomologo.ui.views.registerEntomologistView.viewModel.RegisterEntomologyViewModel
 import com.pragma.entomologo.ui.views.registerEntomologistView.viewModel.RegisterEntomologyViewModelImpl
 import com.pragma.entomologo.ui.views.splashView.viewModel.SplashViewModel
@@ -29,9 +31,10 @@ class ViewModels {
     fun provideFormSpecieViewModel(
         addInsectUseCase: AddInsectUseCase,
         getAllInsectsUseCase: GetAllInsectsUseCase,
+        getImageProfileEntomologistUseCase: GetImageProfileEntomologistUseCase,
     ) : FormSpecieViewModel = FormSpecieViewModelImpl(
-        addInsectUseCase = addInsectUseCase,
-        getAllInsectsUseCase = getAllInsectsUseCase
+        getAllInsectsUseCase = getAllInsectsUseCase,
+        getImageProfileEntomologistUseCase = getImageProfileEntomologistUseCase,
     )
 
     @Provides
@@ -40,6 +43,9 @@ class ViewModels {
     ): ImageProfileViewModel = ImageProfileViewModelImpl(
         getImageProfileEntomologistUseCase = getImageProfileEntomologistUseCase
     )
+
+    @Provides
+    fun providesLoadImageProfileViewModel() : LoadImageProfileViewModel = LoadImageProfileViewModelImpl()
 
     @Provides
     fun providesRegisterEntomologyViewModel(

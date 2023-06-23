@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity
 data class InsectEntity(
     @PrimaryKey(autoGenerate = true)
-    var id: Long?,
+    var id: Long? = null,
     var specieName: String,
     var urlPhoto: String,
     var moreInformation: String

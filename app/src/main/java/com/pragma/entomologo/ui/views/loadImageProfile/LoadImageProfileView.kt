@@ -8,6 +8,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -32,8 +33,11 @@ import com.pragma.entomologo.ui.theme.EntomologoTheme
 import com.pragma.entomologo.ui.views.customs.buttons.CustomRoundedButtonsWithElevation
 import com.pragma.entomologo.ui.views.customs.dialogs.progressDialog.ProgressDialog
 import com.pragma.entomologo.ui.views.customs.images.CustomCircularImage
+import com.pragma.entomologo.ui.views.loadImageProfile.viewModel.LoadImageProfileViewModel
 import com.pragma.entomologo.ui.views.requestPermisions.CheckRequestPermission
 import com.pragma.entomologo.ui.views.requestPermisions.hasPermissions
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO, device = Devices.PHONE)
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, device = Devices.PHONE)
@@ -44,6 +48,7 @@ fun LoadImageProfileViewPreview() {
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.secondaryContainer)) {
             val constraintsId = createRef()
+            val state = MutableStateFlow(value = LoadImageProfileViewModel.StateUI())
             LoadImageProfileView(modifier = Modifier.constrainAs(constraintsId) {
                 bottom.linkTo(parent.bottom)
                 end.linkTo(parent.end)
@@ -53,7 +58,13 @@ fun LoadImageProfileViewPreview() {
             },
                 navigateToProfile = {},
                 navigateToListRecord = {},
-                isPreview = true
+                isPreview = true,
+                viewModel = object : LoadImageProfileViewModel() {
+                    override fun getStateUI(): StateFlow<StateUI> = state
+
+                    override fun loadView() { Log.i("Informacion", "cargando pantalla")}
+
+                }
             )
         }
     }
@@ -64,7 +75,8 @@ fun LoadImageProfileView(
     modifier: Modifier,
     navigateToProfile: ((Bitmap?)->Unit)? = null,
     navigateToListRecord: ((Bitmap?) -> Unit)? = null,
-    isPreview: Boolean = false
+    isPreview: Boolean = false,
+    viewModel: LoadImageProfileViewModel
 ) {
     //region variables
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
@@ -188,10 +200,6 @@ fun LoadImageProfileView(
     }
 }
 
-//region request permission
-
-
 private fun getPermissions(): Array<String> {
     return arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
 }
-//endregion

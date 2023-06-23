@@ -17,7 +17,7 @@ class CustomCircularImageTest {
 
     @Test
     fun checkImageToShow() {
-        composeTestRule.setContent { CustomCircularImage(modifier = Modifier.testTag(TestTags.IMAGE_BUTTON_REMOVE.id).fillMaxWidth(), route = android.R.drawable.ic_delete)}
+        composeTestRule.setContent { CustomCircularImage(modifier = Modifier.testTag(TestTags.IMAGE_BUTTON_REMOVE.id).fillMaxWidth(), placeHolder = android.R.drawable.ic_delete)}
         composeTestRule.onNodeWithTag(TestTags.IMAGE_BUTTON_REMOVE.id).assertIsDisplayed()
     }
 }
