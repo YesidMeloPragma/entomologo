@@ -1,6 +1,7 @@
 package com.pragma.entomologo.unittest.logic.usesCase.addInsectUseCase
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
+import com.pragma.entomologo.logic.datasources.insectDatasource.imageDatasource.InsectImageLocalDatasource
 import com.pragma.entomologo.logic.datasources.insectDatasource.localDatasource.InsectLocalDatasource
 import com.pragma.entomologo.logic.models.InsectModel
 import com.pragma.entomologo.logic.usesCase.addInsectUseCase.AddInsectUseCase
@@ -28,12 +29,18 @@ abstract class BaseAddInsectUseCaseTest {
     lateinit var mockInsectLocalDatasource : InsectLocalDatasource
 
     @MockK
+    lateinit var mockInsectImageLocalDatasource: InsectImageLocalDatasource
+
+    @MockK
     lateinit var mockInsectModel : InsectModel
 
     protected lateinit var addInsectUseCase: AddInsectUseCase
 
     @Before
     fun setUp() {
-        addInsectUseCase =  AddInsectUseCaseImpl(insectLocalDatasource = mockInsectLocalDatasource)
+        addInsectUseCase =  AddInsectUseCaseImpl(
+            insectLocalDatasource = mockInsectLocalDatasource,
+            insectImageLocalDatasource = mockInsectImageLocalDatasource
+        )
     }
 }

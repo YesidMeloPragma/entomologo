@@ -2,8 +2,6 @@
 
 package com.pragma.entomologo.logic.usesCase.getImageProfileEntomologistUseCase
 
-import com.pragma.entomologo.logic.constants.DirNamesEnum
-import com.pragma.entomologo.logic.constants.FileNamesEnum
 import com.pragma.entomologo.logic.datasources.entomologistDatasource.imageDatasource.EntomologistImageDatasource
 import com.pragma.entomologo.logic.datasources.entomologistDatasource.sharedPreferencesDatasource.EntomologistSPDatasource
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +24,7 @@ class GetImageProfileEntomologistUseCaseImpl @Inject constructor(
                     return@collect
                 }
                 entomologistImageDatasource
-                    .loadImageProfile(path = "${DirNamesEnum.IMAGES_APP.getDirName()}/${FileNamesEnum.PROFILE_IMAGE.getFileName()}")
+                    .loadImageProfile(path = entomologistModel.urlPhoto)
                     .collect { imageBase64 ->
                         if (imageBase64 == null) {
                             emit(null)

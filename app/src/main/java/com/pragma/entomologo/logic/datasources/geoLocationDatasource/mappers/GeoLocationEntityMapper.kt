@@ -3,7 +3,7 @@ package com.pragma.entomologo.logic.datasources.geoLocationDatasource.mappers
 import com.pragma.entomologo.logic.models.GeoLocationModel
 import com.pragma.entomologo.sources.database.entities.GeoLocationEntity
 
-fun GeoLocationEntity.convertToGeoLocationModel() : GeoLocationModel {
+fun GeoLocationEntity.convertToGeoLocationEntity() : GeoLocationModel {
     return GeoLocationModel(
         id = this.id,
         lat = this.lat,
@@ -12,5 +12,5 @@ fun GeoLocationEntity.convertToGeoLocationModel() : GeoLocationModel {
 }
 
 fun List<GeoLocationEntity>.convertToListGeoLocationModel() : List<GeoLocationModel> {
-    return this.map { it.convertToGeoLocationModel() }
+    return this.map { it.convertToGeoLocationEntity() }
 }

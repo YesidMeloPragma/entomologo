@@ -26,4 +26,5 @@ import kotlinx.coroutines.flow.Flow
 interface ImageAppGallery {
     fun getImageStringBase64(path: String) : Flow<String?>
     suspend fun saveImage(stringBase64: String, path: String, fileName: String) : String?
+    suspend fun existsImage(path: String): Boolean
 }

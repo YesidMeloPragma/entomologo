@@ -19,6 +19,12 @@ class InsectLocalDatasourceImpl @Inject constructor(
         emit(true)
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun existsInsect(
+        nameSpecie: String
+    ): Boolean = insectDao.existsInsect(
+        nameSpecie = nameSpecie
+    )
+
     override fun getListInsects(): Flow<List<InsectModel>> = flow {
         insectDao.getAllInsects().collect{
             emit(it.convertToListInsectModel())

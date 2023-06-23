@@ -50,6 +50,7 @@ fun NavigationHandler(
         composable(route = Routes.LOAD_IMAGE_PROFILE.route) {
             LoadImageProfileView(
                 modifier = Modifier.fillMaxSize(),
+                viewModel = viewModelHandler.loadImageProfileViewModel,
                 navigateToProfile = {
                     navHostController.popBackStack(route = Routes.REGISTER_NEW_PROFILE.route, inclusive = false)
                     viewModelHandler.registerEntomologyViewModel.setCurrentImageProfile(image = it)
@@ -65,7 +66,12 @@ fun NavigationHandler(
             FormSpecieView(
                 modifier = Modifier.fillMaxSize(),
                 viewModel = viewModelHandler.formSpecieViewModel,
-                navHostController = navHostController
+                navigateToImageProfile = {
+                    
+                },
+                navigateToListRecordsInsect = {
+                    navHostController.popBackStack(route = Routes.LIST_COUNTER_RECORDS.route, inclusive = false)
+                }
             )
         }
 

@@ -4,5 +4,8 @@ import com.pragma.entomologo.logic.models.InsectModel
 import kotlinx.coroutines.flow.Flow
 
 interface AddInsectUseCase {
-    fun invoke(insectModel: InsectModel): Flow<Long>
+    fun invoke(
+        imageBase64: String,
+        insectModel: InsectModel,
+    ): Flow<Long>
 }

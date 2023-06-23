@@ -10,6 +10,8 @@ import com.pragma.entomologo.logic.datasources.entomologistDatasource.sharedPref
 import com.pragma.entomologo.logic.datasources.entomologistDatasource.sharedPreferencesDatasource.EntomologistSPDatasourceImpl
 import com.pragma.entomologo.logic.datasources.geoLocationDatasource.localDatasource.GeoLocationLocalDatasource
 import com.pragma.entomologo.logic.datasources.geoLocationDatasource.localDatasource.GeoLocationLocalDatasourceImpl
+import com.pragma.entomologo.logic.datasources.insectDatasource.imageDatasource.InsectImageLocalDatasource
+import com.pragma.entomologo.logic.datasources.insectDatasource.imageDatasource.InsectImageLocalDatasourceImpl
 import com.pragma.entomologo.logic.datasources.insectDatasource.localDatasource.InsectLocalDatasource
 import com.pragma.entomologo.logic.datasources.insectDatasource.localDatasource.InsectLocalDatasourceImpl
 import com.pragma.entomologo.sources.appImageGallery.ImageAppGallery
@@ -65,5 +67,16 @@ class Datasources {
     )
 
     @Provides
-    fun provideInsectLocalDatasource(insectDao: InsectDao): InsectLocalDatasource = InsectLocalDatasourceImpl(insectDao = insectDao)
+    fun provideInsectLocalDatasource(
+        insectDao: InsectDao
+    ): InsectLocalDatasource = InsectLocalDatasourceImpl(
+        insectDao = insectDao
+    )
+
+    @Provides
+    fun providesInsectImageLocalDatasource(
+        imageAppGallery: ImageAppGallery
+    ) : InsectImageLocalDatasource = InsectImageLocalDatasourceImpl(
+        imageAppGallery = imageAppGallery
+    )
 }

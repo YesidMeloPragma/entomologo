@@ -1,101 +1,100 @@
 package com.pragma.entomologo.ui.views.formSpecieView.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.pragma.entomologo.logic.excepciones.LogicException
 import com.pragma.entomologo.logic.models.InsectModel
 import com.pragma.entomologo.logic.usesCase.addInsectUseCase.AddInsectUseCase
 import com.pragma.entomologo.logic.usesCase.getAllInsectsUseCase.GetAllInsectsUseCase
+import com.pragma.entomologo.ui.dispatchers.DispatcherProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class FormSpecieViewModelImpl @Inject constructor(
     private val addInsectUseCase: AddInsectUseCase,
-    private val getAllInsectsUseCase: GetAllInsectsUseCase
+    private val dispatcherProvider: DispatcherProvider,
+    private val getAllInsectsUseCase: GetAllInsectsUseCase,
 ) : FormSpecieViewModel() {
-
-    private val textAutocomplete = MutableLiveData<String>()
-    private val textMoreInformation = MutableLiveData<String>()
-    private val textUrlPhoto = MutableLiveData<String>()
-    private val listInsectsLivedata = MutableLiveData<List<InsectModel>>()
-    private val loadingLiveData = MutableLiveData<Boolean>()
-    private val goToSpeciesRecordLiveData = MutableLiveData<Pair<Boolean, InsectModel>>()
-
-    private var currentInsect = InsectModel(specieName = "", moreInformation = "", urlPhoto = "")
-
-    override fun goToSpeciesRegisterRecords(): LiveData<Pair<Boolean, InsectModel>> = goToSpeciesRecordLiveData
-
-    override fun listInsects(): LiveData<List<InsectModel>> = listInsectsLivedata
-
-    override fun loading(): LiveData<Boolean> = loadingLiveData
-
-    override fun loadListInsects() {
-        viewModelScope.launch {
-            loadingLiveData.postValue(true)
-            getAllInsectsUseCase
-                .invoke()
-                .collect{
-                    listInsectsLivedata.postValue(it)
-                    loadingLiveData.postValue(false)
-                }
+    override fun closeError() {
+        viewModelScope.launch(context = dispatcherProvider.io()) {
+            updateUIState(logicException = null)
         }
     }
 
-    override fun saveInsect() {
-        viewModelScope.launch {
-            loadingLiveData.postValue(true)
-            if (currentInsect.id != null) {
-                loadingLiveData.postValue(false)
-                goToSpeciesRecordLiveData.postValue(Pair(first = true, second = currentInsect))
-                return@launch
-            }
-            addInsectUseCase
-                .invoke(insectModel = currentInsect).collect {
-                    loadingLiveData.postValue(false)
-                    goToSpeciesRecordLiveData.postValue(
-                        Pair(first = true, second = currentInsect.apply { this.id = it })
+    override fun loadView() {
+        viewModelScope.launch(context = dispatcherProvider.io()) {
+            updateUIState(loadingState = LoadingState.LOADING)
+            getAllInsectsUseCase
+                .invoke()
+                .collect{
+                    updateUIState(
+                        loadingState = LoadingState.LOADED,
+                        listInsect = it,
+                        insectSelected = null,
+                        imageBase64 = "",
+                        logicException = null,
                     )
                 }
         }
     }
 
-    override fun setInsectSelected(insectModel: InsectModel) {
-        viewModelScope.launch {
-            currentInsect = insectModel
-            textAutocomplete.postValue(insectModel.specieName)
-            textUrlPhoto.postValue(insectModel.urlPhoto)
-            textMoreInformation.postValue(insectModel.moreInformation)
+    override fun saveRecord(nameInsect: String, moreInformation: String) {
+        viewModelScope.launch(context = dispatcherProvider.io()) {
+            updateUIState(loadingState = LoadingState.LOADING)
+            val insectToSave = getInsectModel()
+                .apply {
+                    specieName = nameInsect
+                    this.moreInformation = moreInformation
+                }
+            addInsectUseCase
+                .invoke(
+                    imageBase64 = _uiState.value.imageBase64,
+                    insectModel = insectToSave
+                ).catch {
+                    updateUIState(
+                        loadingState = LoadingState.LOADED,
+                        logicException = it as LogicException
+                    )
+                }.collect {
+                    insectToSave.apply { id = it }
+                    updateUIState(
+                        loadingState = LoadingState.NAVIGATE_TO_COUNTER_RECORD,
+                        insectSelected = insectToSave
+                    )
+                }
         }
     }
 
-    override fun setTextAutocomplete(text: String) {
-        viewModelScope.launch {
-            currentInsect.id = null
-            currentInsect.specieName = text
-            textAutocomplete.postValue(text)
+
+    override fun setSelectInsect(insectSelected: InsectModel) {
+        viewModelScope.launch(context = dispatcherProvider.io()) {
+            updateUIState(
+                insectSelected = insectSelected
+            )
         }
     }
 
-    override fun setTextMoreInformation(text: String) {
-        viewModelScope.launch {
-            currentInsect.id = null
-            currentInsect.moreInformation = text
-            textMoreInformation.postValue(text)
+    override fun setImage(imageBase64: String) {
+        viewModelScope.launch(context = dispatcherProvider.io()) {
+            updateUIState(
+                imageBase64 = imageBase64,
+                insectSelected = null
+            )
         }
     }
 
-    override fun setTextUrlPhoto(text: String) {
-        viewModelScope.launch {
-            currentInsect.id = null
-            currentInsect.urlPhoto = text
-            textUrlPhoto.postValue(text)
-        }
+    private fun getInsectModel() : InsectModel {
+        if(
+            _uiState.value.insectSelected != null &&
+            _uiState.value.insectSelected?.specieName?.lowercase()?.isEmpty() != true
+        ) return _uiState.value.insectSelected!!
+
+        return InsectModel(
+            specieName = "",
+            moreInformation = "",
+            urlPhoto = ""
+        )
     }
-
-    override fun textAutocomplete(): LiveData<String> = textAutocomplete
-
-    override fun textMoreInformation(): LiveData<String> = textMoreInformation
-
-    override fun textUrlPhoto(): LiveData<String> = textUrlPhoto
-
 }
