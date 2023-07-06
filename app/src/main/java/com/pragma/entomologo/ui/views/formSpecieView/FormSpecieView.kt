@@ -35,7 +35,7 @@ import com.pragma.entomologo.ui.views.customs.buttons.CustomRoundedButtonsWithEl
 import com.pragma.entomologo.ui.views.customs.dialogs.progressDialog.ProgressDialog
 import com.pragma.entomologo.ui.views.customs.texts.CustomAutocompleteText
 import com.pragma.entomologo.ui.views.customs.texts.CustomTextField
-import com.pragma.entomologo.ui.views.formSpecieView.viewmodel.FormSpecieViewModel
+import com.pragma.entomologo.ui.views.formSpecieView.viewModel.FormSpecieViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

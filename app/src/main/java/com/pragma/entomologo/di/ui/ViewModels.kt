@@ -14,8 +14,8 @@ import com.pragma.entomologo.ui.views.app.imageProfile.viewModel.ImageProfileVie
 import com.pragma.entomologo.ui.views.app.imageProfile.viewModel.ImageProfileViewModelImpl
 import com.pragma.entomologo.ui.views.app.loadImageInsectFromGallery.viewModel.LoadImageInsectFromGalleryViewModel
 import com.pragma.entomologo.ui.views.app.loadImageInsectFromGallery.viewModel.LoadImageInsectFromGalleryViewModelImpl
-import com.pragma.entomologo.ui.views.formSpecieView.viewmodel.FormSpecieViewModel
-import com.pragma.entomologo.ui.views.formSpecieView.viewmodel.FormSpecieViewModelImpl
+import com.pragma.entomologo.ui.views.formSpecieView.viewModel.FormSpecieViewModel
+import com.pragma.entomologo.ui.views.formSpecieView.viewModel.FormSpecieViewModelImpl
 import com.pragma.entomologo.ui.views.loadImageProfile.viewModel.LoadImageProfileViewModel
 import com.pragma.entomologo.ui.views.loadImageProfile.viewModel.LoadImageProfileViewModelImpl
 import com.pragma.entomologo.ui.views.registerEntomologistView.viewModel.RegisterEntomologyViewModel
