@@ -5,6 +5,7 @@ import com.pragma.entomologo.logic.datasources.entomologistDatasource.imageDatas
 import com.pragma.entomologo.logic.datasources.entomologistDatasource.localDatasource.EntomologistLocalDatasource
 import com.pragma.entomologo.logic.datasources.entomologistDatasource.sharedPreferencesDatasource.EntomologistSPDatasource
 import com.pragma.entomologo.logic.datasources.geoLocationDatasource.localDatasource.GeoLocationLocalDatasource
+import com.pragma.entomologo.logic.datasources.insectDatasource.imageDatasource.InsectImageLocalDatasource
 import com.pragma.entomologo.logic.datasources.insectDatasource.localDatasource.InsectLocalDatasource
 import com.pragma.entomologo.logic.usesCase.addInsectUseCase.AddInsectUseCase
 import com.pragma.entomologo.logic.usesCase.addInsectUseCase.AddInsectUseCaseImpl
@@ -12,6 +13,8 @@ import com.pragma.entomologo.logic.usesCase.getAllCountersUseCase.GetAllCounters
 import com.pragma.entomologo.logic.usesCase.getAllCountersUseCase.GetAllCountersUseCaseImpl
 import com.pragma.entomologo.logic.usesCase.getAllInsectsUseCase.GetAllInsectsUseCase
 import com.pragma.entomologo.logic.usesCase.getAllInsectsUseCase.GetAllInsectsUseCaseImpl
+import com.pragma.entomologo.logic.usesCase.getImageInsectUseCase.GetImageInsectUseCase
+import com.pragma.entomologo.logic.usesCase.getImageInsectUseCase.GetImageInsectUseCaseImpl
 import com.pragma.entomologo.logic.usesCase.getImageProfileEntomologistUseCase.GetImageProfileEntomologistUseCase
 import com.pragma.entomologo.logic.usesCase.getImageProfileEntomologistUseCase.GetImageProfileEntomologistUseCaseImpl
 import com.pragma.entomologo.logic.usesCase.isEntomologistRegisteredUseCase.IsEntomologistRegisteredUseCase
@@ -28,7 +31,13 @@ import dagger.hilt.components.SingletonComponent
 class UsesCase {
 
     @Provides
-    fun provideAddInsectUseCase(insectLocalDatasource: InsectLocalDatasource): AddInsectUseCase = AddInsectUseCaseImpl(insectLocalDatasource = insectLocalDatasource)
+    fun provideAddInsectUseCase(
+        insectLocalDatasource: InsectLocalDatasource,
+        insectImageLocalDatasource: InsectImageLocalDatasource,
+    ): AddInsectUseCase = AddInsectUseCaseImpl(
+        insectLocalDatasource = insectLocalDatasource,
+        insectImageLocalDatasource = insectImageLocalDatasource
+    )
 
     @Provides
     fun provideGetAllInsectsUseCase(insectLocalDatasource: InsectLocalDatasource) : GetAllInsectsUseCase = GetAllInsectsUseCaseImpl(insectLocalDatasource = insectLocalDatasource)
@@ -42,6 +51,13 @@ class UsesCase {
         counterRecordInsectLocalDatasource = counterRecordInsectLocalDatasource,
         insectLocalDatasource = insectLocalDatasource,
         geoLocationLocalDatasource = geoLocationLocalDatasource
+    )
+
+    @Provides
+    fun provideGetImageInsectUseCase(
+        insectImageLocalDatasource: InsectImageLocalDatasource
+    ) : GetImageInsectUseCase = GetImageInsectUseCaseImpl(
+        insectImageLocalDatasource = insectImageLocalDatasource
     )
 
     @Provides

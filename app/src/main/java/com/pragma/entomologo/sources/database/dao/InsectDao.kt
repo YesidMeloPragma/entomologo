@@ -10,4 +10,7 @@ interface InsectDao : BaseDao<InsectEntity> {
 
     @Query("SELECT * FROM InsectEntity")
     fun getAllInsects(): Flow<List<InsectEntity>>
+
+    @Query("SELECT EXISTS(SELECT * FROM InsectEntity WHERE specieName = :nameSpecie)")
+    suspend fun existsInsect(nameSpecie : String) : Boolean
 }

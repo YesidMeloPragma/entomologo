@@ -1,14 +1,15 @@
-package com.pragma.entomologo.ui.views.formSpecieView.viewModel
+package com.pragma.entomologo.ui.views.formSpecieView.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.pragma.entomologo.logic.excepciones.LogicException
 import com.pragma.entomologo.logic.models.InsectModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 abstract class FormSpecieViewModel : ViewModel() {
-    protected val dispatcher = Dispatchers.IO
     protected val _uiState = MutableStateFlow(FormSpecieUIState())
     val uiState: StateFlow<FormSpecieUIState> = _uiState.asStateFlow()
 
@@ -16,32 +17,41 @@ abstract class FormSpecieViewModel : ViewModel() {
         START,
         LOADING,
         LOADED,
+        NAVIGATE_TO_COUNTER_RECORD
         ;
     }
 
     data class FormSpecieUIState(
-        val imageProfile: String? = null,
+        val imageBase64: String = "",
+        val insectSelected: InsectModel? = null,
         val loadingState: LoadingState = LoadingState.START,
-        val moreInformation: String = "",
-        val nameInsect: String = "",
+        val logicException: LogicException? = null,
         val listInsect: List<InsectModel> = emptyList(),
-        val insectSelected: InsectModel? = null
     )
 
+    abstract fun closeError()
     abstract fun loadView()
-
-    abstract fun setNameInsect(nameInsect: String)
-
-    abstract fun setMoreInformation(moreInformation: String)
-
+    abstract fun saveRecord(nameInsect: String, moreInformation: String)
     abstract fun setSelectInsect(insectSelected: InsectModel)
+    abstract fun setImage(imageBase64: String)
 
-    abstract fun updateUIState(
+    protected fun updateUIState(
+        imageBase64: String = _uiState.value.imageBase64,
+        insectSelected: InsectModel? = _uiState.value.insectSelected,
         loadingState: LoadingState = _uiState.value.loadingState,
-        imageProfile: String? = _uiState.value.imageProfile,
-        nameInsect: String = _uiState.value.nameInsect,
-        moreInformation: String = _uiState.value.moreInformation,
         listInsect: List<InsectModel> = _uiState.value.listInsect,
-        insectSelected: InsectModel? = _uiState.value.insectSelected
-    )
+        logicException: LogicException? = _uiState.value.logicException,
+    ) {
+        viewModelScope.launch {
+            _uiState.emit(
+                FormSpecieUIState(
+                    loadingState = loadingState,
+                    listInsect = listInsect,
+                    insectSelected = insectSelected,
+                    imageBase64 = imageBase64,
+                    logicException = logicException
+                )
+            )
+        }
+    }
 }

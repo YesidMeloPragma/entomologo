@@ -3,13 +3,19 @@ package com.pragma.entomologo.di.ui
 import com.pragma.entomologo.logic.usesCase.addInsectUseCase.AddInsectUseCase
 import com.pragma.entomologo.logic.usesCase.getAllCountersUseCase.GetAllCountersUseCase
 import com.pragma.entomologo.logic.usesCase.getAllInsectsUseCase.GetAllInsectsUseCase
+import com.pragma.entomologo.logic.usesCase.getImageInsectUseCase.GetImageInsectUseCase
 import com.pragma.entomologo.logic.usesCase.getImageProfileEntomologistUseCase.GetImageProfileEntomologistUseCase
 import com.pragma.entomologo.logic.usesCase.isEntomologistRegisteredUseCase.IsEntomologistRegisteredUseCase
 import com.pragma.entomologo.logic.usesCase.registerEntomologistUseCase.RegisterEntomologistUseCase
+import com.pragma.entomologo.ui.dialogs.errorDialog.viewModel.ErrorDialogViewModel
+import com.pragma.entomologo.ui.dialogs.errorDialog.viewModel.ErrorDialogViewModelImpl
+import com.pragma.entomologo.ui.dispatchers.DispatcherProvider
 import com.pragma.entomologo.ui.views.app.imageProfile.viewModel.ImageProfileViewModel
 import com.pragma.entomologo.ui.views.app.imageProfile.viewModel.ImageProfileViewModelImpl
-import com.pragma.entomologo.ui.views.formSpecieView.viewModel.FormSpecieViewModel
-import com.pragma.entomologo.ui.views.formSpecieView.viewModel.FormSpecieViewModelImpl
+import com.pragma.entomologo.ui.views.app.loadImageInsectFromGallery.viewModel.LoadImageInsectFromGalleryViewModel
+import com.pragma.entomologo.ui.views.app.loadImageInsectFromGallery.viewModel.LoadImageInsectFromGalleryViewModelImpl
+import com.pragma.entomologo.ui.views.formSpecieView.viewmodel.FormSpecieViewModel
+import com.pragma.entomologo.ui.views.formSpecieView.viewmodel.FormSpecieViewModelImpl
 import com.pragma.entomologo.ui.views.loadImageProfile.viewModel.LoadImageProfileViewModel
 import com.pragma.entomologo.ui.views.loadImageProfile.viewModel.LoadImageProfileViewModelImpl
 import com.pragma.entomologo.ui.views.registerEntomologistView.viewModel.RegisterEntomologyViewModel
@@ -28,13 +34,21 @@ import dagger.hilt.android.components.ActivityComponent
 class ViewModels {
 
     @Provides
+    fun provideErrorDialogViewModel(
+        dispatcherProvider: DispatcherProvider
+    ): ErrorDialogViewModel = ErrorDialogViewModelImpl(
+        dispatcherProvider = dispatcherProvider
+    )
+
+    @Provides
     fun provideFormSpecieViewModel(
         addInsectUseCase: AddInsectUseCase,
+        dispatcherProvider: DispatcherProvider,
         getAllInsectsUseCase: GetAllInsectsUseCase,
-        getImageProfileEntomologistUseCase: GetImageProfileEntomologistUseCase,
     ) : FormSpecieViewModel = FormSpecieViewModelImpl(
+        addInsectUseCase = addInsectUseCase,
+        dispatcherProvider = dispatcherProvider,
         getAllInsectsUseCase = getAllInsectsUseCase,
-        getImageProfileEntomologistUseCase = getImageProfileEntomologistUseCase,
     )
 
     @Provides
@@ -45,10 +59,19 @@ class ViewModels {
     )
 
     @Provides
-    fun providesLoadImageProfileViewModel() : LoadImageProfileViewModel = LoadImageProfileViewModelImpl()
+    fun provideLoadImageInsectFromGalleryViewModel(
+        dispatcherProvider: DispatcherProvider,
+        getImageInsectUseCase: GetImageInsectUseCase
+    ) : LoadImageInsectFromGalleryViewModel = LoadImageInsectFromGalleryViewModelImpl(
+        dispatcherProvider = dispatcherProvider,
+        getImageInsectUseCase = getImageInsectUseCase
+    )
 
     @Provides
-    fun providesRegisterEntomologyViewModel(
+    fun provideLoadImageProfileViewModel() : LoadImageProfileViewModel = LoadImageProfileViewModelImpl()
+
+    @Provides
+    fun provideRegisterEntomologyViewModel(
         registerEntomologistUseCase: RegisterEntomologistUseCase
     ): RegisterEntomologyViewModel = RegisterEntomologyViewModelImpl(
         registerEntomologistUseCase = registerEntomologistUseCase

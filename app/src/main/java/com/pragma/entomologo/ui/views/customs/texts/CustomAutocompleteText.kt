@@ -90,13 +90,13 @@ fun <T>CustomAutocompleteText(
             maxLines = 1,
             onValueChange = { currentValueString ->
                 currentValue = currentValueString
+                onValueChanged.invoke(currentValue)
                 if (currentValue.length % 3 != 0) {
                     return@OutlinedTextField
                 }
                 listFiltered = list.filter { it.toString().lowercase().startsWith(currentValue.lowercase()) }.toList().take(3)
                 if (listFiltered.isEmpty()) {
                     expanded = false
-                    onValueChanged.invoke(currentValue)
                     return@OutlinedTextField
                 }
                 expanded = true

@@ -1,7 +1,7 @@
 package com.pragma.entomologo.ui.activities
 
 import com.pragma.entomologo.ui.views.app.imageProfile.viewModel.ImageProfileViewModel
-import com.pragma.entomologo.ui.views.formSpecieView.viewModel.FormSpecieViewModel
+import com.pragma.entomologo.ui.views.formSpecieView.viewmodel.FormSpecieViewModel
 import com.pragma.entomologo.ui.views.loadImageProfile.viewModel.LoadImageProfileViewModel
 import com.pragma.entomologo.ui.views.registerEntomologistView.viewModel.RegisterEntomologyViewModel
 import com.pragma.entomologo.ui.views.speciesRecordsView.viewModel.SpeciesRecordsViewModel

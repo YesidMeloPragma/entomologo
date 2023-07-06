@@ -3,4 +3,13 @@
     <string name="name_specie">Nombre Especie</string>
     <string name="more_information">Más información</string>
     <string name="select">Seleccionar</string>
+    <string name="unspected_error_detail">Surgio un error inesperado.\nIntentelo mas tarde</string>
+    <string name="without_namespecie_detail">No ha ingresado el nombre del insecto.</string>
+    <string name="without_image_specie_detail">No ha ingresado la imagen del insecto</string>
+    <string name="unspected_error">Error inesperado</string>
+    <string name="without_namespecie">Sin nombre insecto</string>
+    <string name="without_image_specie">Sin imagen insecto</string>
+    <string name="accept">Aceptar</string>
+    <string name="without_url">Sin url</string>
+    <string name="without_url_description_insect">No ha ingresado una url para descripcion detallada del insecto.</string>
 </resources>

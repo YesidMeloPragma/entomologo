@@ -1,18 +1,19 @@
 package com.pragma.entomologo.ui.views.formSpecieView
 
 import android.content.res.Configuration
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,14 +23,21 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pragma.entomologo.R
 import com.pragma.entomologo.logic.models.InsectModel
+import com.pragma.entomologo.ui.dialogs.errorDialog.ErrorDialogView
 import com.pragma.entomologo.ui.theme.EntomologoTheme
-import com.pragma.entomologo.ui.utils.extentions.getBitmap
+import com.pragma.entomologo.ui.views.app.imageProfile.ImageProfileView
+import com.pragma.entomologo.ui.views.app.imageProfile.viewModel.ImageProfileViewModel
+import com.pragma.entomologo.ui.views.app.imageProfile.viewModel.ImageProfileViewModelImpl
+import com.pragma.entomologo.ui.views.app.loadImageInsectFromGallery.LoadImageInsectFromGalleryView
+import com.pragma.entomologo.ui.views.app.loadImageInsectFromGallery.viewModel.LoadImageInsectFromGalleryViewModel
+import com.pragma.entomologo.ui.views.app.loadImageInsectFromGallery.viewModel.LoadImageInsectFromGalleryViewModelImpl
 import com.pragma.entomologo.ui.views.customs.buttons.CustomRoundedButtonsWithElevation
 import com.pragma.entomologo.ui.views.customs.dialogs.progressDialog.ProgressDialog
-import com.pragma.entomologo.ui.views.customs.images.CustomCircularImage
 import com.pragma.entomologo.ui.views.customs.texts.CustomAutocompleteText
 import com.pragma.entomologo.ui.views.customs.texts.CustomTextField
-import com.pragma.entomologo.ui.views.formSpecieView.viewModel.FormSpecieViewModel
+import com.pragma.entomologo.ui.views.formSpecieView.viewmodel.FormSpecieViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @Preview(
     showBackground = true,
@@ -46,6 +54,7 @@ fun FormSpecieViewPreview() {
                 .background(color = MaterialTheme.colorScheme.secondaryContainer)
         ) {
             val constraintsId = createRef()
+            val statusImageProfileUI = MutableStateFlow(value = ImageProfileViewModel.ImageProfileUIState())
             FormSpecieView(modifier = Modifier.constrainAs(constraintsId) {
                 bottom.linkTo(parent.bottom)
                 end.linkTo(parent.end)
@@ -54,22 +63,35 @@ fun FormSpecieViewPreview() {
                 width = Dimension.fillToConstraints
             },
                 viewModel = object : FormSpecieViewModel() {
+                    override fun closeError() {Log.i("Informa", "elemento")}
                     override fun loadView() { Log.i("Informa", "elemento")}
-                    override fun setNameInsect(nameInsect: String) { Log.i("Informa", "elemento") }
-                    override fun setMoreInformation(moreInformation: String) { Log.i("Informa", "elemento") }
+                    override fun saveRecord(nameInsect: String, moreInformation: String) {Log.i("Informa", "elemento")}
                     override fun setSelectInsect(insectSelected: InsectModel) { Log.i("Informa", "elemento") }
-                    override fun updateUIState(
-                        loadingState: LoadingState,
-                        imageProfile: String?,
-                        nameInsect: String,
-                        moreInformation: String,
-                        listInsect: List<InsectModel>,
-                        insectSelected: InsectModel?
-                    ) {
-                        Log.i("Informa", "elemento")
-                    }
+                    override fun setImage(imageBase64: String) {Log.i("Informa", "elemento")}
                 },
-                navigateToImageProfile = {}
+                navigateToImageProfile = {},
+                imageProfileViewModel = object : ImageProfileViewModel() {
+                    override fun loadImage() {
+                        Log.i("Informa", "Informacion")
+                    }
+
+                    override fun setImageSelected(bitmap: Bitmap?) {
+                        Log.i("Informa", "Informacion")
+                    }
+
+                    override fun getStateUI(): StateFlow<ImageProfileUIState> = statusImageProfileUI
+                },
+                loadImageInsectFromGalleryViewModel = object : LoadImageInsectFromGalleryViewModel(){
+                    override fun loadUI(insectModel: InsectModel?) {
+                        Log.i("Informacion", "Elemento")
+                    }
+
+                    override fun updatePhotoInsect(image: String?) {
+                        Log.i("Informacion", "Elemento")
+                    }
+
+                },
+                navigateToListRecordsInsect = {}
             )
         }
     }
@@ -79,13 +101,17 @@ fun FormSpecieViewPreview() {
 fun FormSpecieView(
     modifier: Modifier = Modifier,
     viewModel: FormSpecieViewModel = hiltViewModel(),
-    navigateToImageProfile: () -> Unit
+    imageProfileViewModel : ImageProfileViewModel = hiltViewModel<ImageProfileViewModelImpl>(),
+    loadImageInsectFromGalleryViewModel: LoadImageInsectFromGalleryViewModel = hiltViewModel<LoadImageInsectFromGalleryViewModelImpl>(),
+    navigateToImageProfile: () -> Unit,
+    navigateToListRecordsInsect: (insect: InsectModel) -> Unit
 ) {
     //region stateObserver
     val currentState by viewModel.uiState.collectAsState(initial = FormSpecieViewModel.FormSpecieUIState())
     logicApplyInView(
         currentState = currentState,
-        viewModel = viewModel
+        viewModel = viewModel,
+        navigateToListRecordsInsect = navigateToListRecordsInsect
     )
     //endregion
 
@@ -99,7 +125,11 @@ fun FormSpecieView(
                     top.linkTo(parent.top)
                     width = Dimension.fillToConstraints
                 },
-            currentState = currentState
+            currentState = currentState,
+            imageProfileViewModel = imageProfileViewModel,
+            loadImageInsectFromGalleryViewModel= loadImageInsectFromGalleryViewModel,
+            navigateToImageProfile = navigateToImageProfile,
+            formViewModel = viewModel
         )
 
         Body(
@@ -121,14 +151,29 @@ fun FormSpecieView(
 @Composable
 fun Header(
     modifier: Modifier,
-    currentState: FormSpecieViewModel.FormSpecieUIState
+    currentState: FormSpecieViewModel.FormSpecieUIState,
+    formViewModel: FormSpecieViewModel,
+    imageProfileViewModel : ImageProfileViewModel,
+    loadImageInsectFromGalleryViewModel: LoadImageInsectFromGalleryViewModel,
+    navigateToImageProfile: () -> Unit,
 ) {
     ConstraintLayout(
         modifier = modifier
             .aspectRatio(1.3f)
     ) {
-        if(currentState.loadingState == FormSpecieViewModel.LoadingState.LOADING) {
+
+        if(
+            currentState.loadingState == FormSpecieViewModel.LoadingState.LOADING ||
+            currentState.loadingState == FormSpecieViewModel.LoadingState.NAVIGATE_TO_COUNTER_RECORD
+        ) {
             ProgressDialog()
+        }
+
+        if(currentState.logicException != null) {
+            ErrorDialogView(
+                onDismiss = { formViewModel.closeError() },
+                exception = currentState.logicException
+            )
         }
 
         val (imageProfileId, imageInsectId) = createRefs()
@@ -137,7 +182,9 @@ fun Header(
         val guidelineEndImageProfile = createGuidelineFromEnd(0.78f)
         val guidelineStartImageProfile = createGuidelineFromStart(0.06f)
         val guidelineTopImageProfile = createGuidelineFromTop(0.2f)
-        CustomCircularImage(
+        ImageProfileView(
+            viewModel = imageProfileViewModel,
+            action = navigateToImageProfile,
             modifier = Modifier
                 .constrainAs(imageProfileId) {
                     end.linkTo(guidelineEndImageProfile)
@@ -145,21 +192,15 @@ fun Header(
                     top.linkTo(guidelineTopImageProfile)
                     width = Dimension.fillToConstraints
                 }
-                .aspectRatio(1f),
-            placeHolder = R.mipmap.avatar,
-            bitmap = currentState.imageProfile?.getBitmap(),
-            contentScale = ContentScale.FillHeight
+                .aspectRatio(1f)
         )
         //endregion
 
         //region image insect
         val guidelineEndImageInsect = createGuidelineFromEnd(0.35f)
         val guidelineStartImageInsect = createGuidelineFromStart(0.35f)
-        CustomCircularImage(
-            colorBorder = MaterialTheme.colorScheme.primaryContainer,
-            placeHolder = R.drawable.scorpion,
-            contentScale = ContentScale.FillHeight,
-            widthBorder = 5.dp,
+        LoadImageInsectFromGalleryView(
+            insectModel = currentState.insectSelected,
             modifier = Modifier
                 .constrainAs(imageInsectId) {
                     bottom.linkTo(parent.bottom)
@@ -168,8 +209,13 @@ fun Header(
                     width = Dimension.fillToConstraints
                 }
                 .aspectRatio(1f),
+            viewModel = loadImageInsectFromGalleryViewModel,
+            imageSelected = {
+                formViewModel.setImage(imageBase64 = it?:"")
+            }
         )
         //endregion
+
     }
 }
 
@@ -179,6 +225,9 @@ fun Body(
     currentState: FormSpecieViewModel.FormSpecieUIState,
     viewModel: FormSpecieViewModel
 ) {
+    val moreInformation = rememberSaveable { mutableStateOf("") }
+    val nameInsect = rememberSaveable { mutableStateOf("") }
+
     ConstraintLayout(modifier = modifier) {
         val (formInsectId,buttonsId) = createRefs()
 
@@ -194,7 +243,9 @@ fun Body(
                 width = Dimension.fillToConstraints
             },
             currentState = currentState,
-            viewModel = viewModel
+            viewModel = viewModel,
+            moreInformation = moreInformation,
+            nameInsect = nameInsect
         )
         //endregion
 
@@ -209,7 +260,9 @@ fun Body(
                 top.linkTo(formInsectId.bottom)
                 height = Dimension.fillToConstraints
                 width = Dimension.fillToConstraints
-            }
+            },
+            moreInformation = moreInformation,
+            nameInsect = nameInsect
         )
         //endregion
     }
@@ -219,14 +272,10 @@ fun Body(
 fun FormInsect(
     modifier: Modifier,
     currentState: FormSpecieViewModel.FormSpecieUIState,
-    viewModel: FormSpecieViewModel
+    viewModel: FormSpecieViewModel,
+    moreInformation: MutableState<String>,
+    nameInsect: MutableState<String>,
 ) {
-
-    //region variables
-    val moreInformation = rememberSaveable { mutableStateOf("") }
-
-    //endregion
-
     ConstraintLayout(modifier = modifier) {
         val (nameSpecieId, moreInfomationId ) = createRefs()
 
@@ -234,8 +283,13 @@ fun FormInsect(
         CustomAutocompleteText(
             modifier = Modifier.constrainAs(nameSpecieId){},
             list = currentState.listInsect,
-            itemSelected = viewModel::setSelectInsect,
-            onValueChanged = viewModel::setNameInsect,
+            itemSelected = {
+                moreInformation.value = it.moreInformation
+                viewModel.setSelectInsect(insectSelected = it)
+            },
+            onValueChanged = {
+                nameInsect.value = it
+            },
             label = stringResource(id = R.string.name_specie)
         )
         //endregion
@@ -251,7 +305,6 @@ fun FormInsect(
             value = moreInformation.value,
             onValueChange = {
                 moreInformation.value = it
-                viewModel.setMoreInformation(moreInformation = it)
             },
             label = stringResource(id = R.string.more_information)
         )
@@ -263,8 +316,11 @@ fun FormInsect(
 fun ButtonSelect(
     modifier: Modifier,
     currentState: FormSpecieViewModel.FormSpecieUIState,
-    viewModel: FormSpecieViewModel
+    viewModel: FormSpecieViewModel,
+    moreInformation: MutableState<String>,
+    nameInsect: MutableState<String>,
 ) {
+    if(currentState.loadingState == FormSpecieViewModel.LoadingState.LOADING) return
     ConstraintLayout(modifier = modifier) {
         val buttonId = createRef()
 
@@ -277,7 +333,10 @@ fun ButtonSelect(
             },
             text = stringResource(id = R.string.select),
             onClick = {
-
+                viewModel.saveRecord(
+                    nameInsect = nameInsect.value,
+                    moreInformation = moreInformation.value
+                )
             }
         )
     }
@@ -287,11 +346,16 @@ fun ButtonSelect(
 
 private fun logicApplyInView(
     currentState: FormSpecieViewModel.FormSpecieUIState,
-    viewModel: FormSpecieViewModel
+    viewModel: FormSpecieViewModel,
+    navigateToListRecordsInsect: (insect: InsectModel) -> Unit
 ) {
-    when (currentState.loadingState) {
-        FormSpecieViewModel.LoadingState.START -> viewModel.loadView()
-        FormSpecieViewModel.LoadingState.LOADING -> {}
-        FormSpecieViewModel.LoadingState.LOADED -> {}
+    if(currentState.loadingState == FormSpecieViewModel.LoadingState.START){
+        viewModel.loadView()
+        return
+    }
+
+    if(currentState.loadingState ==  FormSpecieViewModel.LoadingState.NAVIGATE_TO_COUNTER_RECORD) {
+        navigateToListRecordsInsect.invoke(currentState.insectSelected!!)
+        return
     }
 }

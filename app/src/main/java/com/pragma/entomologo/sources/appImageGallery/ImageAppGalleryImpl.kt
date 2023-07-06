@@ -68,6 +68,11 @@ class ImageAppGalleryImpl constructor(
         //endregion
     }
 
+    override suspend fun existsImage(path: String): Boolean {
+        val file = File("$basePath/$path")
+        return file.exists()
+    }
+
     private fun String.getBitmap() : Bitmap {
         val decodedString = Base64.decode(this, Base64.DEFAULT)
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)

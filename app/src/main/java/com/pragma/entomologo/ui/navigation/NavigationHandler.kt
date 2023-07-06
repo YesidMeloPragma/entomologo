@@ -68,6 +68,9 @@ fun NavigationHandler(
                 viewModel = viewModelHandler.formSpecieViewModel,
                 navigateToImageProfile = {
                     
+                },
+                navigateToListRecordsInsect = {
+                    navHostController.popBackStack(route = Routes.LIST_COUNTER_RECORDS.route, inclusive = false)
                 }
             )
         }

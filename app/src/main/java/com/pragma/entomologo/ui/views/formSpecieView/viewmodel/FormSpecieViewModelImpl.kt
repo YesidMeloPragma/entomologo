@@ -1,76 +1,100 @@
-package com.pragma.entomologo.ui.views.formSpecieView.viewModel
+package com.pragma.entomologo.ui.views.formSpecieView.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.pragma.entomologo.logic.excepciones.LogicException
 import com.pragma.entomologo.logic.models.InsectModel
+import com.pragma.entomologo.logic.usesCase.addInsectUseCase.AddInsectUseCase
 import com.pragma.entomologo.logic.usesCase.getAllInsectsUseCase.GetAllInsectsUseCase
-import com.pragma.entomologo.logic.usesCase.getImageProfileEntomologistUseCase.GetImageProfileEntomologistUseCase
+import com.pragma.entomologo.ui.dispatchers.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class FormSpecieViewModelImpl @Inject constructor(
+    private val addInsectUseCase: AddInsectUseCase,
+    private val dispatcherProvider: DispatcherProvider,
     private val getAllInsectsUseCase: GetAllInsectsUseCase,
-    private val getImageProfileEntomologistUseCase: GetImageProfileEntomologistUseCase
 ) : FormSpecieViewModel() {
+    override fun closeError() {
+        viewModelScope.launch(context = dispatcherProvider.io()) {
+            updateUIState(logicException = null)
+        }
+    }
 
     override fun loadView() {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(context = dispatcherProvider.io()) {
             updateUIState(loadingState = LoadingState.LOADING)
-            getImageProfileEntomologistUseCase
+            getAllInsectsUseCase
                 .invoke()
-                .collect {
-                    imageProfile ->
-
-                    getAllInsectsUseCase
-                        .invoke()
-                        .collect {
-                            updateUIState(
-                                loadingState = LoadingState.LOADED,
-                                imageProfile = imageProfile
-                            )
-                        }
+                .collect{
+                    updateUIState(
+                        loadingState = LoadingState.LOADED,
+                        listInsect = it,
+                        insectSelected = null,
+                        imageBase64 = "",
+                        logicException = null,
+                    )
                 }
         }
     }
 
-    override fun setNameInsect(nameInsect: String) {
-        viewModelScope.launch(dispatcher) {
-            updateUIState(nameInsect = nameInsect)
+    override fun saveRecord(nameInsect: String, moreInformation: String) {
+        viewModelScope.launch(context = dispatcherProvider.io()) {
+            updateUIState(loadingState = LoadingState.LOADING)
+            val insectToSave = getInsectModel()
+                .apply {
+                    specieName = nameInsect
+                    this.moreInformation = moreInformation
+                }
+            addInsectUseCase
+                .invoke(
+                    imageBase64 = _uiState.value.imageBase64,
+                    insectModel = insectToSave
+                ).catch {
+                    updateUIState(
+                        loadingState = LoadingState.LOADED,
+                        logicException = it as LogicException
+                    )
+                }.collect {
+                    insectToSave.apply { id = it }
+                    updateUIState(
+                        loadingState = LoadingState.NAVIGATE_TO_COUNTER_RECORD,
+                        insectSelected = insectToSave
+                    )
+                }
         }
     }
 
-    override fun setMoreInformation(moreInformation: String) {
-        viewModelScope.launch(dispatcher) {
-            updateUIState(moreInformation = moreInformation)
-        }
-    }
 
     override fun setSelectInsect(insectSelected: InsectModel) {
-        viewModelScope.launch(dispatcher) {
-            updateUIState(insectSelected = insectSelected)
+        viewModelScope.launch(context = dispatcherProvider.io()) {
+            updateUIState(
+                insectSelected = insectSelected
+            )
         }
     }
 
-    override fun updateUIState(
-        loadingState: LoadingState,
-        imageProfile: String?,
-        nameInsect: String,
-        moreInformation: String,
-        listInsect: List<InsectModel>,
-        insectSelected: InsectModel?
-    ) {
-        viewModelScope.launch {
-            _uiState.emit(
-                FormSpecieUIState(
-                    loadingState = loadingState,
-                    imageProfile = imageProfile,
-                    nameInsect = nameInsect,
-                    moreInformation = moreInformation,
-                    listInsect = listInsect,
-                    insectSelected = insectSelected
-                )
+    override fun setImage(imageBase64: String) {
+        viewModelScope.launch(context = dispatcherProvider.io()) {
+            updateUIState(
+                imageBase64 = imageBase64,
+                insectSelected = null
             )
         }
+    }
+
+    private fun getInsectModel() : InsectModel {
+        if(
+            _uiState.value.insectSelected != null &&
+            _uiState.value.insectSelected?.specieName?.lowercase()?.isEmpty() != true
+        ) return _uiState.value.insectSelected!!
+
+        return InsectModel(
+            specieName = "",
+            moreInformation = "",
+            urlPhoto = ""
+        )
     }
 }
