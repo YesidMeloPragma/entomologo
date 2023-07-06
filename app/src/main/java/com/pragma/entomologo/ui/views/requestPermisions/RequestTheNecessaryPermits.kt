@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 @Composable
 fun RequestTheNecessaryPermits(
     showDialog: MutableState<Boolean>,
+    actionCancel: ()-> Unit
 ) {
     if (!showDialog.value) return
 
@@ -40,6 +41,7 @@ fun RequestTheNecessaryPermits(
             Button(
                 onClick = {
                     showDialog.value = false
+                    actionCancel.invoke()
                 }
             ) {
                 Text("cancelar")

@@ -59,7 +59,6 @@ fun ButtonsPreview() {
 
 @Composable
 fun CustomCircularImage(
-    bitmap: Bitmap? = null,
     colorBorder: Color = Color.Transparent,
     contentScale: ContentScale = ContentScale.None,
     modifier: Modifier,
@@ -67,33 +66,9 @@ fun CustomCircularImage(
     route: Int?= null,
     widthBorder: Dp = 0.dp
 ) {
-    if(route == null && bitmap == null) {
+    if(route == null) {
         Image(
             painter = painterResource(id = placeHolder),
-            contentDescription = "",
-            modifier = modifier
-                .clip(shape = CircleShape)
-                .border(border = BorderStroke(width = widthBorder, color = colorBorder), shape = CircleShape)
-                .aspectRatio(ratio = 1f),
-            contentScale = contentScale
-        )
-        return
-    }
-    route?.let {
-        Image(
-            painter = painterResource(id = it),
-            contentDescription = "",
-            modifier = modifier
-                .clip(shape = CircleShape)
-                .border(border = BorderStroke(width = widthBorder, color = colorBorder), shape = CircleShape)
-                .aspectRatio(ratio = 1f),
-            contentScale = contentScale
-        )
-        return
-    }
-    bitmap?.let {
-        Image(
-            bitmap = it.asImageBitmap(),
             contentDescription = "",
             modifier = modifier
                 .clip(shape = CircleShape)
@@ -104,5 +79,65 @@ fun CustomCircularImage(
                 .aspectRatio(ratio = 1f),
             contentScale = contentScale
         )
+        return
+    }
+    route.let {
+        Image(
+            painter = painterResource(id = it),
+            contentDescription = "",
+            modifier = modifier
+                .clip(shape = CircleShape)
+                .border(
+                    border = BorderStroke(width = widthBorder, color = colorBorder),
+                    shape = CircleShape
+                )
+                .aspectRatio(ratio = 1f),
+            contentScale = contentScale
+        )
+        return
+    }
+}
+
+@Composable
+fun CustomCircularImage(
+    bitmap: Bitmap? = null,
+    colorBorder: Color = Color.Transparent,
+    contentScale: ContentScale = ContentScale.None,
+    modifier: Modifier,
+    placeHolder: Int,
+    widthBorder: Dp = 0.dp
+) {
+    ConstraintLayout(modifier = modifier) {
+        val (placeholderId, bitmapId) = createRefs()
+        if (bitmap == null) {
+            Image(
+                painter = painterResource(id = placeHolder),
+                contentDescription = "",
+                modifier = Modifier
+                    .constrainAs(placeholderId){}
+                    .clip(shape = CircleShape)
+                    .border(
+                        border = BorderStroke(width = widthBorder, color = colorBorder),
+                        shape = CircleShape
+                    )
+                    .aspectRatio(ratio = 1f)
+                ,
+                contentScale = contentScale
+            )
+        } else {
+            Image(
+                bitmap = bitmap.asImageBitmap(),
+                contentDescription = "",
+                modifier = Modifier
+                    .constrainAs(bitmapId){}
+                    .clip(shape = CircleShape)
+                    .border(
+                        border = BorderStroke(width = widthBorder, color = colorBorder),
+                        shape = CircleShape
+                    )
+                    .aspectRatio(ratio = 1f),
+                contentScale = contentScale
+            )
+        }
     }
 }

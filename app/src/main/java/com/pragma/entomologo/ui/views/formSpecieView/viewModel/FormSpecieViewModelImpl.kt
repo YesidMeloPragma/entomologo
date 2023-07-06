@@ -7,6 +7,7 @@ import com.pragma.entomologo.logic.usesCase.addInsectUseCase.AddInsectUseCase
 import com.pragma.entomologo.logic.usesCase.getAllInsectsUseCase.GetAllInsectsUseCase
 import com.pragma.entomologo.ui.dispatchers.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -43,9 +44,10 @@ class FormSpecieViewModelImpl @Inject constructor(
     override fun saveRecord(nameInsect: String, moreInformation: String) {
         viewModelScope.launch(context = dispatcherProvider.io()) {
             updateUIState(loadingState = LoadingState.LOADING)
+            delay(1_000)
             val insectToSave = getInsectModel()
                 .apply {
-                    specieName = nameInsect
+                    specieName = if (id == null) nameInsect else specieName
                     this.moreInformation = moreInformation
                 }
             addInsectUseCase
@@ -59,6 +61,7 @@ class FormSpecieViewModelImpl @Inject constructor(
                     )
                 }.collect {
                     insectToSave.apply { id = it }
+                    delay(2_000)
                     updateUIState(
                         loadingState = LoadingState.NAVIGATE_TO_COUNTER_RECORD,
                         insectSelected = insectToSave

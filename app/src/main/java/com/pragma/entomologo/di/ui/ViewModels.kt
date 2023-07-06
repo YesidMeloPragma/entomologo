@@ -68,7 +68,13 @@ class ViewModels {
     )
 
     @Provides
-    fun provideLoadImageProfileViewModel() : LoadImageProfileViewModel = LoadImageProfileViewModelImpl()
+    fun provideLoadImageProfileViewModel(
+        dispatcherProvider: DispatcherProvider,
+        getImageProfileEntomologistUseCase: GetImageProfileEntomologistUseCase
+    ) : LoadImageProfileViewModel = LoadImageProfileViewModelImpl(
+        dispatcherProvider = dispatcherProvider,
+        getImageProfileEntomologistUseCase = getImageProfileEntomologistUseCase
+    )
 
     @Provides
     fun provideRegisterEntomologyViewModel(

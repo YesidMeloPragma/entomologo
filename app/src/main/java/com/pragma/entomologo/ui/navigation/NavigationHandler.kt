@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.pragma.entomologo.ui.activities.ViewModelHandler
 import com.pragma.entomologo.ui.views.counterView.CounterInsectsView
 import com.pragma.entomologo.ui.views.formSpecieView.FormSpecieView
-import com.pragma.entomologo.ui.views.loadImageProfile.LoadImageProfileView
+import com.pragma.entomologo.ui.views.loadImageProfile.view.LoadImageProfileView
 import com.pragma.entomologo.ui.views.registerEntomologistView.RegisterEntomologistView
 import com.pragma.entomologo.ui.views.reports.ReportsView
 import com.pragma.entomologo.ui.views.speciesRecordsView.SpeciesRecordsView
