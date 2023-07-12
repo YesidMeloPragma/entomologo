@@ -100,12 +100,14 @@ class InvokeTest : BaseAddInsectUseCaseTest() {
         val nameSpecie = "SpecieTest"
         val urlPhoto = "UrlPhoto"
         val moreInformation = "moreInformation"
+        val insectId = 1.toLong()
 
         coEvery { mockInsectModel.specieName } answers { nameSpecie }
         coEvery { mockInsectModel.urlPhoto } answers { urlPhoto }
         coEvery { mockInsectModel.moreInformation } answers { moreInformation }
         coEvery { mockInsectImageLocalDatasource.existsImage(path = any()) } returns true
         coEvery { mockInsectLocalDatasource.existsInsect(nameSpecie = any()) } returns true
+        coEvery { mockInsectLocalDatasource.getInsectIdByName(nameSpecie = any()) } returns insectId
 
         //When
         addInsectUseCase
@@ -126,6 +128,7 @@ class InvokeTest : BaseAddInsectUseCaseTest() {
         )}
         coVerify(exactly = 1) { mockInsectLocalDatasource.existsInsect(nameSpecie = any())  }
         coVerify(exactly = 0) { mockInsectLocalDatasource.insertInsect(insectModel = any())  }
+        coVerify(exactly = 1) { mockInsectLocalDatasource.getInsectIdByName(nameSpecie = any()) }
     }
 
     @Test
@@ -137,6 +140,7 @@ class InvokeTest : BaseAddInsectUseCaseTest() {
         val nameSpecie = "SpecieTest"
         val urlPhoto = "UrlPhoto"
         val moreInformation = "moreInformation"
+        val insectId = 1.toLong()
 
         coEvery { mockInsectModel.specieName } answers { nameSpecie }
         coEvery { mockInsectModel.urlPhoto } answers { urlPhoto }
@@ -144,6 +148,7 @@ class InvokeTest : BaseAddInsectUseCaseTest() {
         coEvery { mockInsectImageLocalDatasource.existsImage(path = any()) } returns false
         coEvery { mockInsectImageLocalDatasource.saveImageInsect(imageBase64 = any(), path= any(), fileName = any()) } returns null
         coEvery { mockInsectLocalDatasource.existsInsect(nameSpecie = any()) } returns true
+        coEvery { mockInsectLocalDatasource.getInsectIdByName(nameSpecie = any()) } returns insectId
 
         //When
         addInsectUseCase
@@ -164,6 +169,7 @@ class InvokeTest : BaseAddInsectUseCaseTest() {
         )}
         coVerify(exactly = 1) { mockInsectLocalDatasource.existsInsect(nameSpecie = any())  }
         coVerify(exactly = 0) { mockInsectLocalDatasource.insertInsect(insectModel = any())  }
+        coVerify(exactly = 1) { mockInsectLocalDatasource.getInsectIdByName(nameSpecie = any()) }
     }
 
     @Test

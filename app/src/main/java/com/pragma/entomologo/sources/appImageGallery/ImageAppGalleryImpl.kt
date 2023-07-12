@@ -5,10 +5,6 @@ import android.graphics.BitmapFactory
 import android.os.Environment
 import android.util.Base64
 import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
@@ -16,24 +12,22 @@ import java.io.FileOutputStream
 
 class ImageAppGalleryImpl constructor(
     private val basePath: String = "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)}"): ImageAppGallery {
-    override fun getImageStringBase64(path: String): Flow<String?> = flow {
+    override suspend fun getImageStringBase64(path: String): String? {
         val file = File("$basePath/$path")
         if(!file.exists()) {
-            emit(null)
-            return@flow
+            return null
         }
 
-        try {
+        return try {
             val bi = FileInputStream(file.toURI().path)
             val bitmap = BitmapFactory.decodeStream(bi)
             bi.close()
-            val bnBase64 = bitmap.convertToStringBase64()
-            emit(bnBase64)
-        }catch (e: Exception) {
+            bitmap.convertToStringBase64()
+        } catch (e: Exception) {
             Log.e("Err", "Surgio un error", e)
-            emit(null)
+            null
         }
-    }.flowOn(Dispatchers.IO)
+    }
 
     override suspend fun saveImage(stringBase64: String, path: String, fileName: String) : String {
 

@@ -14,17 +14,13 @@ class InsertGeoLocationTest : BaseGeoLocationLocalDatasourceTest() {
     fun successInsertGeoLocationTest() = runTest {
 
         //Given
-        val longArrayTest = longArrayOf(1,2,3,4,5)
-        coEvery { mockGeoLocationDao.insertElement(element = anyVararg()) } answers { longArrayTest }
+        coEvery { mockGeoLocationDao.insertElement(any()) } returns 1
 
         //when
-        geoLocationLocalDatasource
-            .insertGeoLocation(geoLocationModel = mockGeoLocationModel)
-            .collect{
-                Assert.assertEquals(longArrayTest, it)
-            }
+        val response = geoLocationLocalDatasource.insertGeoLocation(geoLocationModel = mockGeoLocationModel)
+        Assert.assertEquals(1, response.size)
 
         //then
-        coVerify(exactly = 1) { mockGeoLocationDao.insertElement(element = anyVararg()) }
+        coVerify(exactly = 1) { mockGeoLocationDao.insertElement(any()) }
     }
 }

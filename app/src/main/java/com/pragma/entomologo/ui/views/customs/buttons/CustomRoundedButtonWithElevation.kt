@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,7 +39,13 @@ fun CustomRoundedButtonsWithElevationPreview() {
 }
 
 @Composable
-fun CustomRoundedButtonsWithElevation(modifier: Modifier, text: String, onClick: () -> Unit) {
+fun CustomRoundedButtonsWithElevation(
+    modifier: Modifier,
+    text: String,
+    onClick: () -> Unit,
+    colorText: Color = MaterialTheme.colorScheme.primary,
+    colorBackground: Color = MaterialTheme.colorScheme.background,
+) {
     Button(
         modifier = modifier,
         onClick = onClick,
@@ -48,8 +55,8 @@ fun CustomRoundedButtonsWithElevation(modifier: Modifier, text: String, onClick:
             disabledElevation = 0.dp
         ),
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            containerColor = colorBackground,
+            contentColor = colorText
         )
     ) {
         Text(text= text, style = MaterialTheme.typography.labelLarge.copy(

@@ -24,7 +24,7 @@ class EntomologistLocalDatasourceImpl @Inject constructor(
     }
 
     override suspend fun insert(entomologistModel: EntomologistModel): LongArray {
-        return entomologistDao.insertElement(entomologistModel.convertToEntomologistEntity())
+        return arrayOf(entomologistDao.insertElement(entomologistModel.convertToEntomologistEntity())).toLongArray()
     }
 
     override suspend fun update(entomologistModel: EntomologistModel): Boolean {

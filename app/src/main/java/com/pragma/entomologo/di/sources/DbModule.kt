@@ -3,6 +3,7 @@ package com.pragma.entomologo.di.sources
 import android.content.Context
 import com.pragma.entomologo.sources.database.DatabaseApp
 import com.pragma.entomologo.sources.database.dao.CounterRecordInsectDao
+import com.pragma.entomologo.sources.database.dao.CounterRecordInsectDetailDao
 import com.pragma.entomologo.sources.database.dao.EntomologistDao
 import com.pragma.entomologo.sources.database.dao.GeoLocationDao
 import com.pragma.entomologo.sources.database.dao.InsectDao
@@ -23,6 +24,9 @@ class DbModule {
         DatabaseApp.startDatabase(aplicationContext = applicationContext)
         return DatabaseApp.getDB()
     }
+
+    @Provides
+    fun provideCounterRecordInsectDetailDao(databaseApp: DatabaseApp): CounterRecordInsectDetailDao = databaseApp.getCounterRecordInsectDetailDao()
 
     @Provides
     fun provideCounterRecordInsectDao(databaseApp: DatabaseApp): CounterRecordInsectDao = databaseApp.getCounterRecordInsectDao()

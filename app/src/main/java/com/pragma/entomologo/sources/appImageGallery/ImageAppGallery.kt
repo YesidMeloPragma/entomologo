@@ -1,7 +1,5 @@
 package com.pragma.entomologo.sources.appImageGallery
 
-import kotlinx.coroutines.flow.Flow
-
 /**
  * This class save and load images in custom path.
  * the path has be the next caracteristics:
@@ -24,7 +22,7 @@ import kotlinx.coroutines.flow.Flow
  * @author Elver Yesid Melo
  */
 interface ImageAppGallery {
-    fun getImageStringBase64(path: String) : Flow<String?>
+    suspend fun getImageStringBase64(path: String) : String?
     suspend fun saveImage(stringBase64: String, path: String, fileName: String) : String?
     suspend fun existsImage(path: String): Boolean
 }

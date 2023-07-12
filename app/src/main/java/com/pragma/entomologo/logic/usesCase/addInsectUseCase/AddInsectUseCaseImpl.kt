@@ -44,7 +44,8 @@ class AddInsectUseCaseImpl @Inject constructor(
     private fun saveInsectInDB(insectModel: InsectModel, path: String) : Flow<Long> = flow {
         val existsInsect = insectLocalDatasource.existsInsect(nameSpecie = insectModel.specieName.lowercase())
         if (existsInsect) {
-            emit(1)
+            val id = insectLocalDatasource.getInsectIdByName(nameSpecie = insectModel.specieName)
+            emit(id)
             return@flow
         }
         insectLocalDatasource

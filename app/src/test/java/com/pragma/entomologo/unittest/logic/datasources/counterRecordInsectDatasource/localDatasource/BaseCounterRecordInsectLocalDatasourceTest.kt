@@ -7,8 +7,11 @@ import com.pragma.entomologo.logic.models.CounterRecordInsectModel
 import com.pragma.entomologo.logic.models.GeoLocationModel
 import com.pragma.entomologo.logic.models.InsectModel
 import com.pragma.entomologo.sources.database.dao.CounterRecordInsectDao
+import com.pragma.entomologo.sources.database.dao.CounterRecordInsectDetailDao
 import com.pragma.entomologo.sources.database.entities.CounterRecordInsectEntity
+import com.pragma.entomologo.sources.database.views.CounterRecordInsectDetailView
 import com.pragma.entomologo.tools.MainCoroutineRule
+import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit4.MockKRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,17 +30,23 @@ abstract class BaseCounterRecordInsectLocalDatasourceTest {
     @get:Rule
     val mockkRule = MockKRule(this)
 
-    @RelaxedMockK
+    @MockK
     lateinit var mockCounterRecordDao : CounterRecordInsectDao
 
     @RelaxedMockK
     lateinit var mockCounterRecordInsectModel: CounterRecordInsectModel
 
     @RelaxedMockK
-    lateinit var mockCounterRecordInsectEntity: CounterRecordInsectEntity
+    lateinit var mockCounterRecordInsectDetailView: CounterRecordInsectDetailView
 
     @RelaxedMockK
     lateinit var mockInsectModel: InsectModel
+
+    @RelaxedMockK
+    lateinit var mockCounterRecordInsectDao: CounterRecordInsectDao
+
+    @RelaxedMockK
+    lateinit var mockCounterRecordInsectDetailDao: CounterRecordInsectDetailDao
 
     @RelaxedMockK
     lateinit var mockGeoLocationModel: GeoLocationModel
@@ -47,7 +56,8 @@ abstract class BaseCounterRecordInsectLocalDatasourceTest {
     @Before
     fun setUp() {
         counterRecordInsectLocalDatasource = CounterRecordInsectLocalDatasourceImpl(
-            counterRecordInsectDao = mockCounterRecordDao
+            counterRecordInsectDao = mockCounterRecordInsectDao,
+            counterRecordInsectDetailDao = mockCounterRecordInsectDetailDao
         )
     }
 }

@@ -1,9 +1,8 @@
 package com.pragma.entomologo.unittest.logic.usesCase.getImageProfileEntomologistUseCase
 
-import io.mockk.every
-import io.mockk.verify
+import io.mockk.coEvery
+import io.mockk.coVerify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
@@ -16,13 +15,9 @@ class InvokeTest : BaseGetImageProfileEntomologistUseCaseTest() {
 
         //Given
         val image = ""
-        every { mockEntomologistImageDatasource.loadImageProfile(path = any()) } returns flow {
-            emit(image)
-        }
+        coEvery { mockEntomologistImageDatasource.loadImageProfile(path = any()) } returns image
 
-        every { mockEntomologistSPDatasource.getCurrentEntomologist() } returns flow {
-            emit(mockEntomologistModel)
-        }
+        coEvery { mockEntomologistSPDatasource.getCurrentEntomologist() } returns mockEntomologistModel
 
         //when
         getImageProfileEntomologistUseCase
@@ -32,8 +27,8 @@ class InvokeTest : BaseGetImageProfileEntomologistUseCaseTest() {
             }
 
         //then
-        verify (exactly = 1) { mockEntomologistImageDatasource.loadImageProfile(path = any()) }
-        verify (exactly = 1) { mockEntomologistSPDatasource.getCurrentEntomologist() }
+        coVerify (exactly = 1) { mockEntomologistImageDatasource.loadImageProfile(path = any()) }
+        coVerify (exactly = 1) { mockEntomologistSPDatasource.getCurrentEntomologist() }
 
     }
 
@@ -42,13 +37,9 @@ class InvokeTest : BaseGetImageProfileEntomologistUseCaseTest() {
 
         //Given
         val image : String? = null
-        every { mockEntomologistImageDatasource.loadImageProfile(path = any()) } returns flow {
-            emit(image)
-        }
+        coEvery { mockEntomologistImageDatasource.loadImageProfile(path = any()) } returns image
 
-        every { mockEntomologistSPDatasource.getCurrentEntomologist() } returns flow {
-            emit(mockEntomologistModel)
-        }
+        coEvery { mockEntomologistSPDatasource.getCurrentEntomologist() } returns mockEntomologistModel
 
         //when
         getImageProfileEntomologistUseCase
@@ -58,8 +49,8 @@ class InvokeTest : BaseGetImageProfileEntomologistUseCaseTest() {
             }
 
         //then
-        verify (exactly = 1) { mockEntomologistImageDatasource.loadImageProfile(path = any()) }
-        verify (exactly = 1) { mockEntomologistSPDatasource.getCurrentEntomologist() }
+        coVerify (exactly = 1) { mockEntomologistImageDatasource.loadImageProfile(path = any()) }
+        coVerify (exactly = 1) { mockEntomologistSPDatasource.getCurrentEntomologist() }
 
     }
 
@@ -69,13 +60,9 @@ class InvokeTest : BaseGetImageProfileEntomologistUseCaseTest() {
 
         //Given
         val image : String? = null
-        every { mockEntomologistImageDatasource.loadImageProfile(path = any()) } returns flow {
-            emit(image)
-        }
+        coEvery { mockEntomologistImageDatasource.loadImageProfile(path = any()) } returns image
 
-        every { mockEntomologistSPDatasource.getCurrentEntomologist() } returns flow {
-            emit(null)
-        }
+        coEvery { mockEntomologistSPDatasource.getCurrentEntomologist() } returns null
 
         //when
         getImageProfileEntomologistUseCase
@@ -85,8 +72,8 @@ class InvokeTest : BaseGetImageProfileEntomologistUseCaseTest() {
             }
 
         //then
-        verify (exactly = 0) { mockEntomologistImageDatasource.loadImageProfile(path = any()) }
-        verify (exactly = 1) { mockEntomologistSPDatasource.getCurrentEntomologist() }
+        coVerify (exactly = 0) { mockEntomologistImageDatasource.loadImageProfile(path = any()) }
+        coVerify (exactly = 1) { mockEntomologistSPDatasource.getCurrentEntomologist() }
 
     }
 }

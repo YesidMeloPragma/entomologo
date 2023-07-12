@@ -1,9 +1,8 @@
 package com.pragma.entomologo.unittest.logic.datasources.entomologistDatasource.imageDatasource
 
-import io.mockk.every
-import io.mockk.verify
+import io.mockk.coEvery
+import io.mockk.coVerify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
@@ -17,19 +16,14 @@ class LoadImageProfileTest : BaseEntomologistImageDatasourceTest() {
         //Given
         val image = "Image"
         val path = "path"
-        every { mockImageAppGallery.getImageStringBase64(path = any()) } returns flow {
-            emit(image)
-        }
+        coEvery { mockImageAppGallery.getImageStringBase64(path = any()) } returns image
 
         //when
-        entomologistImageDatasource
-            .loadImageProfile(path = path)
-            .collect{
-                Assert.assertEquals(image, it)
-            }
+        val result = entomologistImageDatasource.loadImageProfile(path = path)
+        Assert.assertEquals(image, result)
 
         //then
-        verify(exactly = 1) { mockImageAppGallery.getImageStringBase64(path = any()) }
+        coVerify(exactly = 1) { mockImageAppGallery.getImageStringBase64(path = any()) }
     }
 
     @Test
@@ -37,18 +31,13 @@ class LoadImageProfileTest : BaseEntomologistImageDatasourceTest() {
 
         //Given
         val path = "path"
-        every { mockImageAppGallery.getImageStringBase64(path = any()) } returns flow {
-            emit(null)
-        }
+        coEvery { mockImageAppGallery.getImageStringBase64(path = any()) } returns null
 
         //when
-        entomologistImageDatasource
-            .loadImageProfile(path = path)
-            .collect{
-                Assert.assertEquals(null, it)
-            }
+        val response  = entomologistImageDatasource.loadImageProfile(path = path)
+        Assert.assertEquals(null, response)
 
         //then
-        verify(exactly = 1) { mockImageAppGallery.getImageStringBase64(path = any()) }
+        coVerify(exactly = 1) { mockImageAppGallery.getImageStringBase64(path = any()) }
     }
 }

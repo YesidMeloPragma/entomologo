@@ -26,10 +26,8 @@ class GeoLocationLocalDatasourceImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    override fun insertGeoLocation(geoLocationModel: GeoLocationModel): Flow<LongArray> = flow{
-        val ids = geoLocationDao.insertElement(geoLocationModel.convertToGeoLocationEntity())
-        emit(ids)
-    }.flowOn(Dispatchers.IO)
+    override suspend fun insertGeoLocation(geoLocationModel: GeoLocationModel): LongArray
+        = arrayOf(geoLocationDao.insertElement(geoLocationModel.convertToGeoLocationEntity())).toLongArray()
 
     override fun updateGeoLocation(geoLocationModel: GeoLocationModel): Flow<Boolean> = flow {
         geoLocationDao.updateElement(geoLocationModel.convertToGeoLocationEntity())

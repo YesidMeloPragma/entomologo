@@ -52,7 +52,11 @@ fun ButtonAdd(
     onClick: () -> Unit
 ) {
 
-    ConstraintLayout(modifier = modifier.aspectRatio(ratio = 1f)) {
+    ConstraintLayout(
+        modifier = modifier
+            .aspectRatio(ratio = 1f)
+            .clickable { onClick.invoke() }
+    ) {
         val imageId = createRef()
         Image(
             painter = painterResource(id = R.drawable.add),
@@ -64,7 +68,6 @@ fun ButtonAdd(
                 )
                 .padding(15.dp)
                 .testTag(TestTags.IMAGE_BUTTON_ADD.id)
-                .clickable { onClick.invoke() }
                 .constrainAs(imageId){
                 bottom.linkTo(parent.bottom)
                 end.linkTo(parent.end)

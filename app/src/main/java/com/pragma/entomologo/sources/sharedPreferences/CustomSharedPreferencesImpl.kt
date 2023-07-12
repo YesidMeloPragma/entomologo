@@ -2,8 +2,6 @@ package com.pragma.entomologo.sources.sharedPreferences
 
 import android.content.Context
 import com.google.gson.Gson
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 class CustomSharedPreferencesImpl(context: Context) : CustomSharedPreferences {
     private val nameSP = "SharedPreferences"
@@ -22,15 +20,13 @@ class CustomSharedPreferencesImpl(context: Context) : CustomSharedPreferences {
         return true
     }
 
-    override fun <T> getElement(elementSharedPreferences: ElementSharedPreferences, classe: Class<T>): Flow<T?> = flow {
+    override suspend fun <T> getElement(
+        elementSharedPreferences: ElementSharedPreferences,
+        classe: Class<T>
+    ): T? {
         val gson = Gson()
-        val objJson = preferences.getString(elementSharedPreferences.getKey(), null)
-        if (objJson == null) {
-            emit(null)
-            return@flow
-        }
-        val obj = gson.fromJson(objJson, classe)
-        emit(obj)
+        val objJson = preferences.getString(elementSharedPreferences.getKey(), null) ?: return null
+        return gson.fromJson(objJson, classe)
     }
 
 

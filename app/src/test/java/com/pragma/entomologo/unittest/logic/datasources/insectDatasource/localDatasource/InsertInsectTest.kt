@@ -15,19 +15,17 @@ class InsertInsectTest : BaseInsectLocalDatasourceTest() {
     fun successInsertInsectTest() = runTest {
 
         //Given
-        val listIds = longArrayOf(1,2,3,4,5)
-        coEvery {mockInsectDao.insertElement(element = anyVararg())} answers { listIds }
+        coEvery {mockInsectDao.insertElement(any())} returns 1
 
         //when
         insectLocalDatasource
             .insertInsect(insectModel = mockInsectModel)
             .collect{
-                Assert.assertEquals(listIds.size, it.size)
-                Assert.assertEquals(listIds, it)
+                Assert.assertEquals(1, it.size)
             }
 
         //then
-        coVerify (exactly = 1){mockInsectDao.insertElement(element = anyVararg())}
+        coVerify (exactly = 1){mockInsectDao.insertElement(any())}
 
     }
 }

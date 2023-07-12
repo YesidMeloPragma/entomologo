@@ -10,7 +10,7 @@ import com.pragma.entomologo.sources.database.entities.BaseEntity
 interface BaseDao<T: BaseEntity> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertElement(vararg element: T) : LongArray
+    suspend fun insertElement(element: T) : Long
 
     @Delete
     suspend fun deleteElement(vararg element: T)

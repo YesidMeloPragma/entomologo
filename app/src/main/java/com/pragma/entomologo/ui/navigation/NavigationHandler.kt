@@ -3,11 +3,13 @@ package com.pragma.entomologo.ui.navigation
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.pragma.entomologo.ui.activities.ViewModelHandler
-import com.pragma.entomologo.ui.views.counterView.CounterInsectsView
+import com.pragma.entomologo.ui.views.counterInsects.CounterInsectsView
 import com.pragma.entomologo.ui.views.formSpecieView.FormSpecieView
 import com.pragma.entomologo.ui.views.loadImageProfile.view.LoadImageProfileView
 import com.pragma.entomologo.ui.views.registerEntomologistView.RegisterEntomologistView
@@ -24,10 +26,21 @@ fun NavigationHandler(
         navController = navHostController,
         startDestination = Routes.SPLASH.route,
     ) {
-        composable(route = Routes.COUNTER_INSECTS.route) {
+
+        composable(
+            route = Routes.COUNTER_INSECTS.route,
+            arguments = listOf(
+                navArgument("insectId") { type = NavType.IntType },
+                navArgument("counterInsectId") { type = NavType.IntType },
+            )
+        ) { backStackEntry ->
             CounterInsectsView(
                 modifier = Modifier.fillMaxSize(),
-                navHostController = navHostController
+                insectId = backStackEntry.arguments?.getInt("insectId")?:-1,
+                counterInsect = backStackEntry.arguments?.getInt("counterInsectId")?:-1,
+                navigateToList = {
+                    navHostController.popBackStack(route = Routes.LIST_COUNTER_RECORDS.route, inclusive = false)
+                }
             )
         }
 
@@ -70,7 +83,13 @@ fun NavigationHandler(
                     
                 },
                 navigateToListRecordsInsect = {
-                    navHostController.popBackStack(route = Routes.LIST_COUNTER_RECORDS.route, inclusive = false)
+                    val routeNavigation = Routes
+                        .COUNTER_INSECTS
+                        .route
+                        .replace("{insectId}", (it.id?:0).toString())
+                        .replace("{counterInsectId}", (0).toString())
+
+                    navHostController.navigate(route = routeNavigation)
                 }
             )
         }

@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,6 +24,7 @@ import com.pragma.entomologo.logic.models.CounterRecordInsectModel
 import com.pragma.entomologo.logic.models.GeoLocationModel
 import com.pragma.entomologo.logic.models.InsectModel
 import com.pragma.entomologo.ui.theme.EntomologoTheme
+import com.pragma.entomologo.ui.utils.extentions.getBitmap
 
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO, device = Devices.PHONE)
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, device = Devices.PHONE)
@@ -66,7 +68,11 @@ fun ItemListCounterRecord(
                 shape = RoundedCornerShape(size = 12.dp)
             )
     ) {
-        val (counterId, detailId, imageId) = createRefs()
+        val (
+            counterId,
+            detailId,
+            imageId
+        ) = createRefs()
 
         //region counter
         val guidelineCounterBottom = createGuidelineFromBottom(0.25f)
@@ -88,7 +94,7 @@ fun ItemListCounterRecord(
         ){
             val textId = createRef()
             Text(
-                text = "${counter.count}",
+                text = if(counter.count < 10) "0${counter.count}" else "${counter.count}",
                 modifier = Modifier.constrainAs(textId){
                     bottom.linkTo(parent.bottom)
                     end.linkTo(parent.end)
@@ -143,17 +149,57 @@ fun ItemListCounterRecord(
         //endregion
 
         //region image
-        val guidelineStartImage = createGuidelineFromStart(0.78f)
-        Image(
-            painter = painterResource(id = R.drawable.scorpion),
-            contentDescription = "",
-            modifier = Modifier.constrainAs(imageId){
-                bottom.linkTo(parent.bottom)
-                end.linkTo(parent.end)
-                start.linkTo(guidelineStartImage)
-                top.linkTo(parent.top)
-            }
+        val guidelineEndImage = createGuidelineFromEnd(0.03f)
+        ImageInsect(
+            modifier = Modifier
+                .constrainAs(imageId){
+                    bottom.linkTo(parent.bottom, margin = 10.dp)
+                    end.linkTo(guidelineEndImage)
+                    top.linkTo(parent.top, margin = 10.dp)
+
+                    height = Dimension.fillToConstraints
+                }
+            ,
+            counter = counter
         )
         //endregion
+
+    }
+}
+
+@Composable
+fun ImageInsect(
+    modifier: Modifier,
+    counter: CounterRecordInsectModel
+) {
+    ConstraintLayout(
+        modifier = modifier
+            .aspectRatio(1f)
+    ) {
+        val (imageId, placeholderId) = createRefs()
+        if (counter.imageBase64 == null) {
+            Image(
+                painter = painterResource(id = R.drawable.scorpion),
+                contentDescription = "",
+                modifier = Modifier.constrainAs(placeholderId){
+                    bottom.linkTo(parent.bottom)
+                    end.linkTo(parent.end)
+                    start.linkTo(parent.start)
+                    top.linkTo(parent.top)
+                }
+            )
+        } else {
+            Image(
+                bitmap = counter.imageBase64!!.getBitmap().asImageBitmap(),
+                contentDescription = "",
+                modifier = Modifier.constrainAs(imageId){
+                    bottom.linkTo(parent.bottom)
+                    end.linkTo(parent.end)
+                    start.linkTo(parent.start)
+                    top.linkTo(parent.top)
+                }
+            )
+        }
+
     }
 }
