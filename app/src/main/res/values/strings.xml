@@ -13,4 +13,6 @@
     <string name="without_url">Sin url</string>
     <string name="without_url_description_insect">No ha ingresado una url para descripcion detallada del insecto.</string>
     <string name="upload_image">Subir imagen</string>
+    <string name="add_comment">Agregar comentario</string>
+    <string name="save">Guardar</string>
 </resources>

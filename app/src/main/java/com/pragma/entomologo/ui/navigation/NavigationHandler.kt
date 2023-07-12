@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.pragma.entomologo.ui.activities.ViewModelHandler
-import com.pragma.entomologo.ui.views.counterView.CounterInsectsView
+import com.pragma.entomologo.ui.views.counterInsects.CounterInsectsView
 import com.pragma.entomologo.ui.views.formSpecieView.FormSpecieView
 import com.pragma.entomologo.ui.views.loadImageProfile.view.LoadImageProfileView
 import com.pragma.entomologo.ui.views.registerEntomologistView.RegisterEntomologistView
@@ -27,7 +27,9 @@ fun NavigationHandler(
         composable(route = Routes.COUNTER_INSECTS.route) {
             CounterInsectsView(
                 modifier = Modifier.fillMaxSize(),
-                navHostController = navHostController
+                navigateToList = {
+
+                }
             )
         }
 
@@ -70,7 +72,7 @@ fun NavigationHandler(
                     
                 },
                 navigateToListRecordsInsect = {
-                    navHostController.popBackStack(route = Routes.LIST_COUNTER_RECORDS.route, inclusive = false)
+                    navHostController.navigate(Routes.COUNTER_INSECTS.route)
                 }
             )
         }

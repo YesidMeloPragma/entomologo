@@ -14,6 +14,8 @@ import com.pragma.entomologo.ui.views.app.imageProfile.viewModel.ImageProfileVie
 import com.pragma.entomologo.ui.views.app.imageProfile.viewModel.ImageProfileViewModelImpl
 import com.pragma.entomologo.ui.views.app.loadImageInsectFromGallery.viewModel.LoadImageInsectFromGalleryViewModel
 import com.pragma.entomologo.ui.views.app.loadImageInsectFromGallery.viewModel.LoadImageInsectFromGalleryViewModelImpl
+import com.pragma.entomologo.ui.views.counterInsects.viewModel.CounterInsectsViewModel
+import com.pragma.entomologo.ui.views.counterInsects.viewModel.CounterInsectsViewModelImpl
 import com.pragma.entomologo.ui.views.formSpecieView.viewModel.FormSpecieViewModel
 import com.pragma.entomologo.ui.views.formSpecieView.viewModel.FormSpecieViewModelImpl
 import com.pragma.entomologo.ui.views.loadImageProfile.viewModel.LoadImageProfileViewModel
@@ -32,6 +34,13 @@ import dagger.hilt.android.components.ActivityComponent
 @Module
 @InstallIn(ActivityComponent::class)
 class ViewModels {
+
+    @Provides
+    fun provideCounterInsectsViewModel(
+        dispatcherProvider: DispatcherProvider
+    ) : CounterInsectsViewModel = CounterInsectsViewModelImpl(
+        dispatcherProvider = dispatcherProvider
+    )
 
     @Provides
     fun provideErrorDialogViewModel(
