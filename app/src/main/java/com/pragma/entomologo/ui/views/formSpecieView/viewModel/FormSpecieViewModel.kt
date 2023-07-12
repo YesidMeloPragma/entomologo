@@ -17,7 +17,8 @@ abstract class FormSpecieViewModel : ViewModel() {
         START,
         LOADING,
         LOADED,
-        NAVIGATE_TO_COUNTER_RECORD
+        NAVIGATE_TO_COUNTER_RECORD,
+        RESTART,
         ;
     }
 

@@ -25,16 +25,20 @@ import com.pragma.entomologo.ui.views.customs.texts.CustomText
 @Composable
 fun NewCounterViewPreview() {
     EntomologoTheme {
-        ConstraintLayout(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colorScheme.secondaryContainer)) {
+        ConstraintLayout(modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.secondaryContainer)) {
             val constraintsId = createRef()
             NewCounterView(
-                modifier = Modifier.constrainAs(constraintsId) {
-                    bottom.linkTo(parent.bottom)
-                    end.linkTo(parent.end)
-                    start.linkTo(parent.start)
-                    top.linkTo(parent.top)
-                    width = Dimension.fillToConstraints
-                }.aspectRatio(1f/0.2f),
+                modifier = Modifier
+                    .constrainAs(constraintsId) {
+                        bottom.linkTo(parent.bottom)
+                        end.linkTo(parent.end)
+                        start.linkTo(parent.start)
+                        top.linkTo(parent.top)
+                        width = Dimension.fillToConstraints
+                    }
+                    .aspectRatio(1f / 0.2f),
                 onClick = {
 
                 }
@@ -44,10 +48,27 @@ fun NewCounterViewPreview() {
 }
 
 @Composable
-fun NewCounterView(modifier: Modifier, onClick : ()->Unit) {
+fun NewCounterView(
+    modifier: Modifier,
+    onClick : ()->Unit
+) {
+    ConstraintLayout(modifier = modifier
+        .background(color = MaterialTheme.colorScheme.surface)) {
+        ContentNewCounterView(
+            modifier = Modifier.fillMaxSize(),
+            onClick = onClick
+        )
+    }
+}
+
+@Composable
+fun ContentNewCounterView(
+    modifier: Modifier,
+    onClick: () -> Unit
+) {
     ConstraintLayout(
         modifier = modifier
-            .background(color = MaterialTheme.colorScheme.surface)) {
+            .background(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f))) {
 
         val (dotId, textId, addId) = createRefs()
 

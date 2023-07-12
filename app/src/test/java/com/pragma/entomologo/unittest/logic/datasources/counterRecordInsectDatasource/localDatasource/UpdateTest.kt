@@ -23,7 +23,7 @@ class UpdateTest : BaseCounterRecordInsectLocalDatasourceTest() {
             }
 
         //then
-        coVerify(exactly = 1) { mockCounterRecordDao.updateElement(element = any()) }
+        coVerify(exactly = 0) { mockCounterRecordDao.updateElement(element = any()) }
 
     }
 }

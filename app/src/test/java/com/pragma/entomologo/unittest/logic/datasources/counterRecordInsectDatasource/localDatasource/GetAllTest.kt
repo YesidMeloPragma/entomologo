@@ -1,9 +1,8 @@
 package com.pragma.entomologo.unittest.logic.datasources.counterRecordInsectDatasource.localDatasource
 
-import io.mockk.every
-import io.mockk.verify
+import io.mockk.coEvery
+import io.mockk.coVerify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
@@ -15,20 +14,14 @@ class GetAllTest : BaseCounterRecordInsectLocalDatasourceTest() {
     fun successGetAllWithOneElement() = runTest {
 
         //Given
-        val list = listOf(mockCounterRecordInsectEntity)
+        val list = listOf(mockCounterRecordInsectDetailView)
 
-        every { mockCounterRecordDao.getAll() } returns flow {
-            emit(list)
-        }
-        
+        coEvery { mockCounterRecordInsectDetailDao.getAllCounterRecordInsectDetail() } returns list
         //when
-        counterRecordInsectLocalDatasource
-            .getAll()
-            .collect{
-                Assert.assertEquals(list.size, it.count())
-            }
+        val listModel = counterRecordInsectLocalDatasource.getAll()
+        Assert.assertEquals(list.size, listModel.size)
 
         //then
-        verify(exactly = 1) { mockCounterRecordDao.getAll() }
+        coVerify (exactly = 1) { mockCounterRecordInsectDetailDao.getAllCounterRecordInsectDetail() }
     }
 }

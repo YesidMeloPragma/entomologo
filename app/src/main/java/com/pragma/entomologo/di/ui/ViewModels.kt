@@ -5,8 +5,10 @@ import com.pragma.entomologo.logic.usesCase.getAllCountersUseCase.GetAllCounters
 import com.pragma.entomologo.logic.usesCase.getAllInsectsUseCase.GetAllInsectsUseCase
 import com.pragma.entomologo.logic.usesCase.getImageInsectUseCase.GetImageInsectUseCase
 import com.pragma.entomologo.logic.usesCase.getImageProfileEntomologistUseCase.GetImageProfileEntomologistUseCase
+import com.pragma.entomologo.logic.usesCase.getInsectWithImageByIdUseCase.GetInsectWithImageByIdUseCase
 import com.pragma.entomologo.logic.usesCase.isEntomologistRegisteredUseCase.IsEntomologistRegisteredUseCase
 import com.pragma.entomologo.logic.usesCase.registerEntomologistUseCase.RegisterEntomologistUseCase
+import com.pragma.entomologo.logic.usesCase.registerRecordInsectUseCase.RegisterRecordInsectUseCase
 import com.pragma.entomologo.ui.dialogs.errorDialog.viewModel.ErrorDialogViewModel
 import com.pragma.entomologo.ui.dialogs.errorDialog.viewModel.ErrorDialogViewModelImpl
 import com.pragma.entomologo.ui.dispatchers.DispatcherProvider
@@ -14,6 +16,8 @@ import com.pragma.entomologo.ui.views.app.imageProfile.viewModel.ImageProfileVie
 import com.pragma.entomologo.ui.views.app.imageProfile.viewModel.ImageProfileViewModelImpl
 import com.pragma.entomologo.ui.views.app.loadImageInsectFromGallery.viewModel.LoadImageInsectFromGalleryViewModel
 import com.pragma.entomologo.ui.views.app.loadImageInsectFromGallery.viewModel.LoadImageInsectFromGalleryViewModelImpl
+import com.pragma.entomologo.ui.views.counterInsects.viewModel.CounterInsectsViewModel
+import com.pragma.entomologo.ui.views.counterInsects.viewModel.CounterInsectsViewModelImpl
 import com.pragma.entomologo.ui.views.formSpecieView.viewModel.FormSpecieViewModel
 import com.pragma.entomologo.ui.views.formSpecieView.viewModel.FormSpecieViewModelImpl
 import com.pragma.entomologo.ui.views.loadImageProfile.viewModel.LoadImageProfileViewModel
@@ -32,6 +36,17 @@ import dagger.hilt.android.components.ActivityComponent
 @Module
 @InstallIn(ActivityComponent::class)
 class ViewModels {
+
+    @Provides
+    fun provideCounterInsectsViewModel(
+        dispatcherProvider: DispatcherProvider,
+        getInsectWithImageByIdUseCase: GetInsectWithImageByIdUseCase,
+        registerRecordInsectUseCase: RegisterRecordInsectUseCase
+    ) : CounterInsectsViewModel = CounterInsectsViewModelImpl(
+        dispatcherProvider = dispatcherProvider,
+        getInsectWithImageByIdUseCase = getInsectWithImageByIdUseCase,
+        registerRecordInsectUseCase = registerRecordInsectUseCase
+    )
 
     @Provides
     fun provideErrorDialogViewModel(

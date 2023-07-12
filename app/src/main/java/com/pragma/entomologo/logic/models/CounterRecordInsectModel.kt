@@ -6,4 +6,5 @@ data class CounterRecordInsectModel(
     var geoLocation: GeoLocationModel,
     var comment: String,
     var count: Int,
+    var imageBase64: String? = null
 )

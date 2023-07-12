@@ -1,12 +1,11 @@
 package com.pragma.entomologo.unittest.logic.usesCase.getAllCounterUseCase
 
 import com.pragma.entomologo.logic.models.CounterRecordInsectModel
-import com.pragma.entomologo.logic.models.GeoLocationModel
-import com.pragma.entomologo.logic.models.InsectModel
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
@@ -19,20 +18,8 @@ class InvokeTest : BaseGetAllCounterTest() {
 
         //Given
         val listCounterInsects = listOf(mockCounterRecordInsectModel)
-        val listInsectModel = listOf(mockInsectModel)
-        val listGeoLocationModel = listOf(mockGeoLocationModel)
 
-        every { mockCounterRecordInsectLocalDatasource.getAll() } returns flow {
-            emit(listCounterInsects)
-        }
-
-        every { mockInsectLocalDatasource.getListInsects() } returns flow {
-            emit(listInsectModel)
-        }
-
-        every { mockGeoLocationLocalDatasource.getAllGeoLocations() } returns flow {
-            emit(listGeoLocationModel)
-        }
+        coEvery { mockCounterRecordInsectLocalDatasource.getAll() } returns listCounterInsects
 
         every { mockInsectModel.id } returns 1
         every { mockGeoLocationModel.id } returns 1
@@ -48,13 +35,9 @@ class InvokeTest : BaseGetAllCounterTest() {
             }
 
         //then
-        verify(exactly = 1) { mockCounterRecordInsectLocalDatasource.getAll() }
-        verify(exactly = 1) { mockInsectLocalDatasource.getListInsects() }
-        verify(exactly = 1) { mockGeoLocationLocalDatasource.getAllGeoLocations() }
-        verify(exactly = 2) { mockInsectModel.id }
-        verify(exactly = 2) { mockGeoLocationModel.id }
-        verify(exactly = 1) { mockCounterRecordInsectModel.insect }
-        verify(exactly = 1) { mockCounterRecordInsectModel.geoLocation }
+        coVerify(exactly = 1) { mockCounterRecordInsectLocalDatasource.getAll() }
+        verify(exactly = 1) { mockInsectModel.id }
+        verify(exactly = 2) { mockCounterRecordInsectModel.insect }
     }
 
     @Test
@@ -62,20 +45,8 @@ class InvokeTest : BaseGetAllCounterTest() {
 
         //Given
         val listCounterInsects = emptyList<CounterRecordInsectModel>()
-        val listInsectModel = emptyList<InsectModel>()
-        val listGeoLocationModel = emptyList<GeoLocationModel>()
+        coEvery { mockCounterRecordInsectLocalDatasource.getAll() } returns listCounterInsects
 
-        every { mockCounterRecordInsectLocalDatasource.getAll() } returns flow {
-            emit(listCounterInsects)
-        }
-
-        every { mockInsectLocalDatasource.getListInsects() } returns flow {
-            emit(listInsectModel)
-        }
-
-        every { mockGeoLocationLocalDatasource.getAllGeoLocations() } returns flow {
-            emit(listGeoLocationModel)
-        }
 
         //when
         getAllCounter
@@ -85,9 +56,7 @@ class InvokeTest : BaseGetAllCounterTest() {
             }
 
         //then
-        verify(exactly = 1) { mockCounterRecordInsectLocalDatasource.getAll() }
-        verify(exactly = 1) { mockInsectLocalDatasource.getListInsects() }
-        verify(exactly = 1) { mockGeoLocationLocalDatasource.getAllGeoLocations() }
+        coVerify(exactly = 1) { mockCounterRecordInsectLocalDatasource.getAll() }
     }
 
 }

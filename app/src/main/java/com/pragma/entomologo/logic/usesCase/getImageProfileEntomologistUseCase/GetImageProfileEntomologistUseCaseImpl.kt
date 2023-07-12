@@ -1,5 +1,3 @@
-@file:Suppress("LABEL_NAME_CLASH")
-
 package com.pragma.entomologo.logic.usesCase.getImageProfileEntomologistUseCase
 
 import com.pragma.entomologo.logic.datasources.entomologistDatasource.imageDatasource.EntomologistImageDatasource
@@ -16,22 +14,12 @@ class GetImageProfileEntomologistUseCaseImpl @Inject constructor(
 ) : GetImageProfileEntomologistUseCase {
 
     override fun invoke(): Flow<String?> = flow {
-        entomologistSPDatasource
-            .getCurrentEntomologist()
-            .collect{ entomologistModel ->
-                if(entomologistModel == null) {
-                    emit(null)
-                    return@collect
-                }
-                entomologistImageDatasource
-                    .loadImageProfile(path = entomologistModel.urlPhoto)
-                    .collect { imageBase64 ->
-                        if (imageBase64 == null) {
-                            emit(null)
-                            return@collect
-                        }
-                        emit(imageBase64)
-                    }
-            }
+        val entomologistModel = entomologistSPDatasource.getCurrentEntomologist()
+        if(entomologistModel == null) {
+            emit(null)
+            return@flow
+        }
+        val image = entomologistImageDatasource.loadImageProfile(path = entomologistModel.urlPhoto)
+        emit(image)
     }.flowOn(Dispatchers.IO)
 }

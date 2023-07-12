@@ -2,8 +2,7 @@ package com.pragma.entomologo.unittest.logic.usesCase.getAllCounterUseCase
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import com.pragma.entomologo.logic.datasources.counterRecordInsectDatasource.localDatasource.CounterRecordInsectLocalDatasource
-import com.pragma.entomologo.logic.datasources.geoLocationDatasource.localDatasource.GeoLocationLocalDatasource
-import com.pragma.entomologo.logic.datasources.insectDatasource.localDatasource.InsectLocalDatasource
+import com.pragma.entomologo.logic.datasources.insectDatasource.imageDatasource.InsectImageLocalDatasource
 import com.pragma.entomologo.logic.models.CounterRecordInsectModel
 import com.pragma.entomologo.logic.models.GeoLocationModel
 import com.pragma.entomologo.logic.models.InsectModel
@@ -32,12 +31,6 @@ abstract class BaseGetAllCounterTest {
     @MockK
     lateinit var mockCounterRecordInsectLocalDatasource : CounterRecordInsectLocalDatasource
 
-    @MockK
-    lateinit var mockInsectLocalDatasource : InsectLocalDatasource
-
-    @MockK
-    lateinit var mockGeoLocationLocalDatasource: GeoLocationLocalDatasource
-
     @RelaxedMockK
     lateinit var mockCounterRecordInsectModel: CounterRecordInsectModel
 
@@ -47,14 +40,16 @@ abstract class BaseGetAllCounterTest {
     @RelaxedMockK
     lateinit var mockGeoLocationModel: GeoLocationModel
 
+    @RelaxedMockK
+    lateinit var mockInsectImageLocalDatasource: InsectImageLocalDatasource
+
     protected lateinit var getAllCounter: GetAllCountersUseCase
 
     @Before
     fun setUp() {
         getAllCounter = GetAllCountersUseCaseImpl(
             counterRecordInsectLocalDatasource = mockCounterRecordInsectLocalDatasource,
-            insectLocalDatasource = mockInsectLocalDatasource,
-            geoLocationLocalDatasource = mockGeoLocationLocalDatasource
+            insectImageLocalDatasource = mockInsectImageLocalDatasource
         )
     }
 }

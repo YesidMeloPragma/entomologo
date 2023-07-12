@@ -16,6 +16,7 @@ import com.pragma.entomologo.logic.datasources.insectDatasource.localDatasource.
 import com.pragma.entomologo.logic.datasources.insectDatasource.localDatasource.InsectLocalDatasourceImpl
 import com.pragma.entomologo.sources.appImageGallery.ImageAppGallery
 import com.pragma.entomologo.sources.database.dao.CounterRecordInsectDao
+import com.pragma.entomologo.sources.database.dao.CounterRecordInsectDetailDao
 import com.pragma.entomologo.sources.database.dao.EntomologistDao
 import com.pragma.entomologo.sources.database.dao.GeoLocationDao
 import com.pragma.entomologo.sources.database.dao.InsectDao
@@ -31,9 +32,11 @@ class Datasources {
 
     @Provides
     fun providesCounterInsectLocalDatasource(
-        counterRecordInsectDao: CounterRecordInsectDao
+        counterRecordInsectDao: CounterRecordInsectDao,
+        counterRecordInsectDetailDao: CounterRecordInsectDetailDao
     ) : CounterRecordInsectLocalDatasource = CounterRecordInsectLocalDatasourceImpl(
-        counterRecordInsectDao = counterRecordInsectDao
+        counterRecordInsectDao = counterRecordInsectDao,
+        counterRecordInsectDetailDao = counterRecordInsectDetailDao
     )
 
     //region Entomologist

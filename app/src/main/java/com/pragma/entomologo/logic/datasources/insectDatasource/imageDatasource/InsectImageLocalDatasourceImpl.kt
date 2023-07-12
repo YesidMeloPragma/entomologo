@@ -1,8 +1,6 @@
 package com.pragma.entomologo.logic.datasources.insectDatasource.imageDatasource
 
 import com.pragma.entomologo.sources.appImageGallery.ImageAppGallery
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class InsectImageLocalDatasourceImpl @Inject constructor(
@@ -11,11 +9,7 @@ class InsectImageLocalDatasourceImpl @Inject constructor(
 
     override suspend fun existsImage(path: String): Boolean = imageAppGallery.existsImage(path = path)
 
-    override fun loadImageInsect(path: String): Flow<String?> = flow {
-        imageAppGallery
-            .getImageStringBase64(path = path)
-            .collect { emit(it) }
-    }
+    override suspend fun loadImageInsect(path: String): String? = imageAppGallery.getImageStringBase64(path = path)
 
     override suspend fun saveImageInsect(
         imageBase64: String,

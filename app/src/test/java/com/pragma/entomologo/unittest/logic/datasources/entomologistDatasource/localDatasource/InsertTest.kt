@@ -14,16 +14,14 @@ class InsertTest : BaseEntomologistLocalDatasourceTest() {
     fun successInsertTest() = runTest {
 
         //Given
-        val listIds = longArrayOf(1,2)
-        coEvery { mockEntomologistDao.insertElement(element = anyVararg()) } answers { listIds }
+        coEvery { mockEntomologistDao.insertElement(any()) } returns 1
 
         //when
         val result = entomologistLocalDatasource.insert(entomologistModel = mockEntomologistModel)
-        Assert.assertEquals(listIds.size, result.size)
-        Assert.assertEquals(listIds, result)
+        Assert.assertEquals(1, result.size)
 
         //then
-        coVerify { mockEntomologistDao.insertElement(element = anyVararg()) }
+        coVerify { mockEntomologistDao.insertElement(any()) }
 
     }
 }

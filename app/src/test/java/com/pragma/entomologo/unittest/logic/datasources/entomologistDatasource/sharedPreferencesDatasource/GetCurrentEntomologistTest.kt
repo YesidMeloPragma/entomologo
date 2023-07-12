@@ -1,10 +1,9 @@
 package com.pragma.entomologo.unittest.logic.datasources.entomologistDatasource.sharedPreferencesDatasource
 
 import com.pragma.entomologo.logic.models.EntomologistModel
-import io.mockk.every
-import io.mockk.verify
+import io.mockk.coEvery
+import io.mockk.coVerify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
@@ -16,18 +15,13 @@ class GetCurrentEntomologistTest : BaseEntomologistSPDatasourceTest() {
     fun successGetCurrentEntomologistTest() = runTest {
 
         //Given
-        every { mockCustomSharedPreferences.getElement(elementSharedPreferences = any(), classe = EntomologistModel::class.java) } returns flow {
-            emit(mockEntomologistModel)
-        }
+        coEvery { mockCustomSharedPreferences.getElement(elementSharedPreferences = any(), classe = EntomologistModel::class.java) } returns mockEntomologistModel
 
         //when
-        entomologistSPDatasource
-            .getCurrentEntomologist()
-            .collect{
-                Assert.assertEquals(mockEntomologistModel, it)
-            }
+        val response = entomologistSPDatasource.getCurrentEntomologist()
+        Assert.assertEquals(mockEntomologistModel, response)
 
         //then
-        verify(exactly = 1) { mockCustomSharedPreferences.getElement(elementSharedPreferences = any(), classe = EntomologistModel::class.java) }
+        coVerify(exactly = 1) { mockCustomSharedPreferences.getElement(elementSharedPreferences = any(), classe = EntomologistModel::class.java) }
     }
 }

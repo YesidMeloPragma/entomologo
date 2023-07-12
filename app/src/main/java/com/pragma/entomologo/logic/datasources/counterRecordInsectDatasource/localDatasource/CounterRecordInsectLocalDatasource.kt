@@ -4,8 +4,8 @@ import com.pragma.entomologo.logic.models.CounterRecordInsectModel
 import kotlinx.coroutines.flow.Flow
 
 interface CounterRecordInsectLocalDatasource {
-    fun delete(counterRecordInsectModel: CounterRecordInsectModel): Flow<Boolean>
-    fun getAll(): Flow<List<CounterRecordInsectModel>>
-    fun insert(counterRecordInsectModel: CounterRecordInsectModel): Flow<LongArray>
+    suspend fun delete(counterRecordInsectModel: CounterRecordInsectModel): Boolean
+    suspend fun getAll(): List<CounterRecordInsectModel>
+    suspend fun insert(counterRecordInsectModel: CounterRecordInsectModel): LongArray
     fun update(counterRecordInsectModel: CounterRecordInsectModel): Flow<Boolean>
 }

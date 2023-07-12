@@ -39,6 +39,7 @@ import com.pragma.entomologo.ui.views.formSpecieView.viewModel.FormSpecieViewMod
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
+private var navigate = true
 @Preview(
     showBackground = true,
     showSystemUi = true,
@@ -162,10 +163,7 @@ fun Header(
             .aspectRatio(1.3f)
     ) {
 
-        if(
-            currentState.loadingState == FormSpecieViewModel.LoadingState.LOADING ||
-            currentState.loadingState == FormSpecieViewModel.LoadingState.NAVIGATE_TO_COUNTER_RECORD
-        ) {
+        if(currentState.loadingState == FormSpecieViewModel.LoadingState.LOADING) {
             ProgressDialog()
         }
 
@@ -320,7 +318,10 @@ fun ButtonSelect(
     moreInformation: MutableState<String>,
     nameInsect: MutableState<String>,
 ) {
-    if(currentState.loadingState == FormSpecieViewModel.LoadingState.LOADING) return
+    if(
+        currentState.loadingState == FormSpecieViewModel.LoadingState.LOADING ||
+        currentState.loadingState == FormSpecieViewModel.LoadingState.NAVIGATE_TO_COUNTER_RECORD
+    ) return
     ConstraintLayout(modifier = modifier) {
         val buttonId = createRef()
 
@@ -350,12 +351,16 @@ private fun logicApplyInView(
     navigateToListRecordsInsect: (insect: InsectModel) -> Unit
 ) {
     if(currentState.loadingState == FormSpecieViewModel.LoadingState.START){
+        navigate = true
         viewModel.loadView()
         return
     }
 
     if(currentState.loadingState ==  FormSpecieViewModel.LoadingState.NAVIGATE_TO_COUNTER_RECORD) {
-        navigateToListRecordsInsect.invoke(currentState.insectSelected!!)
+        if (navigate) {
+            navigate = false
+            navigateToListRecordsInsect.invoke(currentState.insectSelected!!)
+        }
         return
     }
 }

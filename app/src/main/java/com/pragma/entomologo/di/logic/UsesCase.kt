@@ -17,10 +17,14 @@ import com.pragma.entomologo.logic.usesCase.getImageInsectUseCase.GetImageInsect
 import com.pragma.entomologo.logic.usesCase.getImageInsectUseCase.GetImageInsectUseCaseImpl
 import com.pragma.entomologo.logic.usesCase.getImageProfileEntomologistUseCase.GetImageProfileEntomologistUseCase
 import com.pragma.entomologo.logic.usesCase.getImageProfileEntomologistUseCase.GetImageProfileEntomologistUseCaseImpl
+import com.pragma.entomologo.logic.usesCase.getInsectWithImageByIdUseCase.GetInsectWithImageByIdUseCase
+import com.pragma.entomologo.logic.usesCase.getInsectWithImageByIdUseCase.GetInsectWithImageByIdUseCaseImpl
 import com.pragma.entomologo.logic.usesCase.isEntomologistRegisteredUseCase.IsEntomologistRegisteredUseCase
 import com.pragma.entomologo.logic.usesCase.isEntomologistRegisteredUseCase.IsEntomologistRegisteredUseCaseImpl
 import com.pragma.entomologo.logic.usesCase.registerEntomologistUseCase.RegisterEntomologistUseCase
 import com.pragma.entomologo.logic.usesCase.registerEntomologistUseCase.RegisterEntomologistUseCaseImpl
+import com.pragma.entomologo.logic.usesCase.registerRecordInsectUseCase.RegisterRecordInsectUseCase
+import com.pragma.entomologo.logic.usesCase.registerRecordInsectUseCase.RegisterRecordInsectUseCaseImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,12 +49,10 @@ class UsesCase {
     @Provides
     fun provideGetAllCountersInsectsUseCase(
         counterRecordInsectLocalDatasource: CounterRecordInsectLocalDatasource,
-        insectLocalDatasource: InsectLocalDatasource,
-        geoLocationLocalDatasource: GeoLocationLocalDatasource
+        insectImageLocalDatasource: InsectImageLocalDatasource
     ): GetAllCountersUseCase = GetAllCountersUseCaseImpl(
         counterRecordInsectLocalDatasource = counterRecordInsectLocalDatasource,
-        insectLocalDatasource = insectLocalDatasource,
-        geoLocationLocalDatasource = geoLocationLocalDatasource
+        insectImageLocalDatasource = insectImageLocalDatasource
     )
 
     @Provides
@@ -70,6 +72,15 @@ class UsesCase {
     )
 
     @Provides
+    fun provideGetInsectWithImageByIdUseCase(
+        insectImageLocalDatasource: InsectImageLocalDatasource,
+        insectLocalDatasource: InsectLocalDatasource
+    ) : GetInsectWithImageByIdUseCase = GetInsectWithImageByIdUseCaseImpl(
+        insectImageLocalDatasource = insectImageLocalDatasource,
+        insectLocalDatasource = insectLocalDatasource
+    )
+
+    @Provides
     fun provideIsEntomologistRegisteredUseCase(
         entomologistSPDatasource: EntomologistSPDatasource
     ) : IsEntomologistRegisteredUseCase = IsEntomologistRegisteredUseCaseImpl(
@@ -85,5 +96,14 @@ class UsesCase {
         entomologistImageDatasource = entomologistImageDatasource,
         entomologistLocalDatasource = entomologistLocalDatasource,
         entomologistSPDatasource = entomologistSPDatasource
+    )
+
+    @Provides
+    fun provideRegisterRecordInsectUseCase(
+        counterRecordInsectLocalDatasource: CounterRecordInsectLocalDatasource,
+        geoLocationLocalDatasource: GeoLocationLocalDatasource
+    ) : RegisterRecordInsectUseCase = RegisterRecordInsectUseCaseImpl(
+        counterRecordInsectLocalDatasource = counterRecordInsectLocalDatasource,
+        geoLocationLocalDatasource = geoLocationLocalDatasource
     )
 }
