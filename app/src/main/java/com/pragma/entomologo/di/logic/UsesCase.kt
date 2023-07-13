@@ -17,6 +17,8 @@ import com.pragma.entomologo.logic.usesCase.getImageInsectUseCase.GetImageInsect
 import com.pragma.entomologo.logic.usesCase.getImageInsectUseCase.GetImageInsectUseCaseImpl
 import com.pragma.entomologo.logic.usesCase.getImageProfileEntomologistUseCase.GetImageProfileEntomologistUseCase
 import com.pragma.entomologo.logic.usesCase.getImageProfileEntomologistUseCase.GetImageProfileEntomologistUseCaseImpl
+import com.pragma.entomologo.logic.usesCase.getInsectWithImageByIdUseCase.GetInsectWithImageByIdUseCase
+import com.pragma.entomologo.logic.usesCase.getInsectWithImageByIdUseCase.GetInsectWithImageByIdUseCaseImpl
 import com.pragma.entomologo.logic.usesCase.isEntomologistRegisteredUseCase.IsEntomologistRegisteredUseCase
 import com.pragma.entomologo.logic.usesCase.isEntomologistRegisteredUseCase.IsEntomologistRegisteredUseCaseImpl
 import com.pragma.entomologo.logic.usesCase.registerEntomologistUseCase.RegisterEntomologistUseCase
@@ -67,6 +69,15 @@ class UsesCase {
     ) : GetImageProfileEntomologistUseCase = GetImageProfileEntomologistUseCaseImpl(
         entomologistSPDatasource = entomologistSPDatasource,
         entomologistImageDatasource = entomologistImageDatasource
+    )
+
+    @Provides
+    fun provideGetInsectWithImageByIdUseCase(
+        insectImageLocalDatasource: InsectImageLocalDatasource,
+        insectLocalDatasource: InsectLocalDatasource
+    ) : GetInsectWithImageByIdUseCase = GetInsectWithImageByIdUseCaseImpl(
+        insectImageLocalDatasource = insectImageLocalDatasource,
+        insectLocalDatasource = insectLocalDatasource
     )
 
     @Provides

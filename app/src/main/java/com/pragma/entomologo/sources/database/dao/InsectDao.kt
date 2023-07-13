@@ -13,4 +13,7 @@ interface InsectDao : BaseDao<InsectEntity> {
 
     @Query("SELECT EXISTS(SELECT * FROM InsectEntity WHERE specieName = :nameSpecie)")
     suspend fun existsInsect(nameSpecie : String) : Boolean
+
+    @Query("SELECT * FROM InsectEntity WHERE id = :insectId")
+    suspend fun getInsectEntityById(insectId: Long): InsectEntity
 }

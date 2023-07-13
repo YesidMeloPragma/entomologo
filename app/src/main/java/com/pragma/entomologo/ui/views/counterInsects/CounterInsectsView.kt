@@ -59,7 +59,7 @@ fun CounterInsectsViewPreview() {
                 width = Dimension.fillToConstraints
             },
                 viewModel = object : CounterInsectsViewModel() {
-                    override fun loadCounterInsects() {
+                    override fun loadCounterInsects(counterInsect: Int, insectId: Int) {
                         Log.i("Informacion", "Elementos")
                     }
 
@@ -71,11 +71,7 @@ fun CounterInsectsViewPreview() {
                         Log.i("Informacion", "Elementos")
                     }
 
-                    override fun setImageInsect(imageBase64: String?) {
-                        Log.i("Informacion", "Elementos")
-                    }
-
-                    override fun setInsectModel(insectModel: InsectModel?) {
+                    override fun setInsectModel(insectModel: InsectModel) {
                         Log.i("Informacion", "Elementos")
                     }
 
@@ -98,7 +94,7 @@ fun CounterInsectsViewPreview() {
                     }
 
                 },
-                navigateToList = {}
+                navigateToList = {},
             )
         }
     }
@@ -107,15 +103,17 @@ fun CounterInsectsViewPreview() {
 @Composable
 fun CounterInsectsView(
     modifier: Modifier = Modifier,
-    insectModel: InsectModel? = null,
+    insectId: Int = -1,
+    counterInsect: Int = -1,
     viewModel: CounterInsectsViewModel = hiltViewModel<CounterInsectsViewModelImpl>(),
     navigateToList: () -> Unit
 ) {
     //region stateObserver
-    viewModel.setInsectModel(insectModel = insectModel)
     val currentState by viewModel.uiState.collectAsState(initial = CounterInsectsViewModel.CounterInsectsUIState())
     logicApplyInView(
         currentState = currentState,
+        insectId = insectId,
+        counterInsect = counterInsect,
         navigateToList= navigateToList,
         viewModel = viewModel
     )
@@ -229,7 +227,7 @@ fun Body(
         //endregion
 
         //region save
-        saveButton(
+        SaveButton(
             modifier = Modifier
                 .constrainAs(saveButtonId) {
                     bottom.linkTo(parent.bottom)
@@ -419,7 +417,7 @@ fun Observation(
 
 //region save button
 @Composable
-fun saveButton(
+fun SaveButton(
     modifier: Modifier,
     currentState: CounterInsectsViewModel.CounterInsectsUIState,
     viewModel: CounterInsectsViewModel
@@ -439,11 +437,15 @@ fun saveButton(
 //region logic
 private fun logicApplyInView(
     currentState: CounterInsectsViewModel.CounterInsectsUIState,
+    counterInsect: Int,
+    insectId: Int,
     navigateToList: () -> Unit,
     viewModel: CounterInsectsViewModel
 ) {
     checkStatusUI(
         currentState = currentState,
+        counterInsect = counterInsect,
+        insectId = insectId,
         navigateToList = navigateToList,
         viewModel = viewModel
     )
@@ -451,11 +453,13 @@ private fun logicApplyInView(
 
 private fun checkStatusUI(
     currentState: CounterInsectsViewModel.CounterInsectsUIState,
+    counterInsect: Int,
+    insectId: Int,
     navigateToList: () -> Unit,
     viewModel: CounterInsectsViewModel
 ) {
     if(currentState.statesCounterInsectsUI == CounterInsectsViewModel.StatesCounterInsectsUI.START) {
-        viewModel.loadCounterInsects()
+        viewModel.loadCounterInsects(counterInsect = counterInsect, insectId = insectId)
         return
     }
 

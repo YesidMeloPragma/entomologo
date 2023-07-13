@@ -2,6 +2,7 @@ package com.pragma.entomologo.ui.views.counterInsects.viewModel
 
 import androidx.lifecycle.viewModelScope
 import com.pragma.entomologo.logic.models.InsectModel
+import com.pragma.entomologo.logic.usesCase.getInsectWithImageByIdUseCase.GetInsectWithImageByIdUseCase
 import com.pragma.entomologo.ui.dispatchers.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -10,17 +11,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CounterInsectsViewModelImpl @Inject constructor(
-    private val dispatcherProvider: DispatcherProvider
+    private val dispatcherProvider: DispatcherProvider,
+    private val getInsectWithImageByIdUseCase: GetInsectWithImageByIdUseCase
 ) : CounterInsectsViewModel() {
 
-    override fun loadCounterInsects() {
+    override fun loadCounterInsects(counterInsect: Int, insectId: Int) {
         viewModelScope.launch(dispatcherProvider.io()) {
             updateState(statesCounterInsectsUI = StatesCounterInsectsUI.LOADING)
-            delay(3_000)
-            updateState(
-                throwable = null,
-                statesCounterInsectsUI = StatesCounterInsectsUI.LOADED
-            )
+            getInsectWithImageByIdUseCase
+                .invoke(insectId = insectId.toLong())
+                .collect {
+                    updateState(
+                        statesCounterInsectsUI = StatesCounterInsectsUI.LOADED,
+                        insectModel = it.first,
+                        imageBase64 = it.second
+                    )
+                }
+
         }
     }
 
@@ -39,13 +46,7 @@ class CounterInsectsViewModelImpl @Inject constructor(
         }
     }
 
-    override fun setImageInsect(imageBase64: String?) {
-        viewModelScope.launch(dispatcherProvider.io()) {
-            updateState(imageBase64 = imageBase64)
-        }
-    }
-
-    override fun setInsectModel(insectModel: InsectModel?) {
+    override fun setInsectModel(insectModel: InsectModel) {
         viewModelScope.launch(dispatcherProvider.io()) {
             updateState(insectModel = insectModel)
         }

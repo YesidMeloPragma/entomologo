@@ -32,15 +32,13 @@ abstract class CounterInsectsViewModel : ViewModel() {
 
     abstract fun closeException()
 
-    abstract fun loadCounterInsects()
+    abstract fun loadCounterInsects(counterInsect: Int, insectId: Int)
 
     abstract fun removeInsectFromCounter()
 
     abstract fun saveRecord()
 
-    abstract fun setImageInsect(imageBase64: String?)
-
-    abstract fun setInsectModel(insectModel: InsectModel?)
+    abstract fun setInsectModel(insectModel: InsectModel)
 
     abstract fun updateState(
         counter: Int = _uiState.value.counter,

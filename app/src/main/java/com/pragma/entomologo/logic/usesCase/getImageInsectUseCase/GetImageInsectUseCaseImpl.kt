@@ -15,10 +15,7 @@ class GetImageInsectUseCaseImpl @Inject constructor(
             emit(null)
             return@flow
         }
-        insectImageLocalDatasource
-            .loadImageInsect(path = insectModel.urlPhoto)
-            .collect{
-                emit(it)
-            }
+        val image = insectImageLocalDatasource.loadImageInsect(path = insectModel.urlPhoto)
+        emit(image)
     }
 }

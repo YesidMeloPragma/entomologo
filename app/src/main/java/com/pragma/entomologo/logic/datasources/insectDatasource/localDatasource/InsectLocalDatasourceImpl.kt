@@ -1,6 +1,7 @@
 package com.pragma.entomologo.logic.datasources.insectDatasource.localDatasource
 
 import com.pragma.entomologo.logic.datasources.insectDatasource.mappers.convertToInsectEntity
+import com.pragma.entomologo.logic.datasources.insectDatasource.mappers.convertToInsectModel
 import com.pragma.entomologo.logic.datasources.insectDatasource.mappers.convertToListInsectModel
 import com.pragma.entomologo.logic.models.InsectModel
 import com.pragma.entomologo.sources.database.dao.InsectDao
@@ -24,6 +25,12 @@ class InsectLocalDatasourceImpl @Inject constructor(
     ): Boolean = insectDao.existsInsect(
         nameSpecie = nameSpecie
     )
+
+    override suspend fun getInsectModelById(
+        insectId: Long
+    ): InsectModel = insectDao.getInsectEntityById(
+        insectId = insectId
+    ).convertToInsectModel()
 
     override fun getListInsects(): Flow<List<InsectModel>> = flow {
         insectDao.getAllInsects().collect{
