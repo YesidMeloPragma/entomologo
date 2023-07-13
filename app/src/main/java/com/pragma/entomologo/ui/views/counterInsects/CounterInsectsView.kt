@@ -25,7 +25,9 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pragma.entomologo.R
+import com.pragma.entomologo.logic.excepciones.LogicException
 import com.pragma.entomologo.logic.models.InsectModel
+import com.pragma.entomologo.ui.dialogs.errorDialog.ErrorDialogView
 import com.pragma.entomologo.ui.theme.EntomologoTheme
 import com.pragma.entomologo.ui.utils.extentions.getBitmap
 import com.pragma.entomologo.ui.views.counterInsects.viewModel.CounterInsectsViewModel
@@ -120,6 +122,7 @@ fun CounterInsectsView(
         Header(
             modifier = Modifier.constrainAs(headerId) {},
             currentState = currentState,
+            viewModel = viewModel
         )
         Body(
             modifier = Modifier.constrainAs(bodyId) {
@@ -141,11 +144,20 @@ fun CounterInsectsView(
 @Composable
 fun Header(
     modifier: Modifier,
-    currentState: CounterInsectsViewModel.CounterInsectsUIState
+    currentState: CounterInsectsViewModel.CounterInsectsUIState,
+    viewModel: CounterInsectsViewModel
 ) {
     ConstraintLayout(modifier = modifier) {
         if (currentState.statesCounterInsectsUI == CounterInsectsViewModel.StatesCounterInsectsUI.LOADING)  {
             ProgressDialog()
+        }
+        if (currentState.statesCounterInsectsUI == CounterInsectsViewModel.StatesCounterInsectsUI.SHOW_ERROR) {
+            ErrorDialogView(
+                onDismiss = {
+                    viewModel.closeException()
+                },
+                exception = currentState.throwable!! as LogicException
+            )
         }
     }
 }
@@ -421,6 +433,7 @@ fun SaveButton(
     viewModel: CounterInsectsViewModel
 ) {
     if(currentState.counter <= 0) return
+    if (currentState.statesCounterInsectsUI == CounterInsectsViewModel.StatesCounterInsectsUI.NAVIGATE_TO_LIST) return
     CustomRoundedButtonsWithElevation(
         modifier = modifier,
         text = stringResource(id = R.string.save),
@@ -428,7 +441,6 @@ fun SaveButton(
     )
 }
 //endregion
-
 
 //endregion
 

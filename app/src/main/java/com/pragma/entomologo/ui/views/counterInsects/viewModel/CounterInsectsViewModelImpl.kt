@@ -1,6 +1,7 @@
 package com.pragma.entomologo.ui.views.counterInsects.viewModel
 
 import androidx.lifecycle.viewModelScope
+import com.pragma.entomologo.logic.excepciones.LogicException
 import com.pragma.entomologo.logic.models.CounterRecordInsectModel
 import com.pragma.entomologo.logic.models.GeoLocationModel
 import com.pragma.entomologo.logic.models.InsectModel
@@ -8,6 +9,7 @@ import com.pragma.entomologo.logic.usesCase.getInsectWithImageByIdUseCase.GetIns
 import com.pragma.entomologo.logic.usesCase.registerRecordInsectUseCase.RegisterRecordInsectUseCase
 import com.pragma.entomologo.ui.dispatchers.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -52,6 +54,13 @@ class CounterInsectsViewModelImpl @Inject constructor(
             )
             registerRecordInsectUseCase
                 .invoke(counterRecordInsectModel = counter)
+                .catch {
+                    val exception = if(it is LogicException) it else LogicException()
+                    updateState(
+                        statesCounterInsectsUI = StatesCounterInsectsUI.SHOW_ERROR,
+                        throwable = exception
+                    )
+                }
                 .collect {
                     updateState(
                         statesCounterInsectsUI = StatesCounterInsectsUI.NAVIGATE_TO_LIST
@@ -88,7 +97,10 @@ class CounterInsectsViewModelImpl @Inject constructor(
 
     override fun closeException() {
         viewModelScope.launch(dispatcherProvider.io()) {
-            updateState(throwable = null)
+            updateState(
+                throwable = null,
+                statesCounterInsectsUI = StatesCounterInsectsUI.LOADED
+            )
         }
     }
 }

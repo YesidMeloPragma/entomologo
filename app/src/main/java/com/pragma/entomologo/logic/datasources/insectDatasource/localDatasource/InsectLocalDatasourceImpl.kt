@@ -32,6 +32,9 @@ class InsectLocalDatasourceImpl @Inject constructor(
         insectId = insectId
     ).convertToInsectModel()
 
+    override suspend fun getInsectIdByName(nameSpecie: String): Long
+        = insectDao.getInsectIdByName(nameSpecie = nameSpecie)
+
     override fun getListInsects(): Flow<List<InsectModel>> = flow {
         insectDao.getAllInsects().collect{
             emit(it.convertToListInsectModel())

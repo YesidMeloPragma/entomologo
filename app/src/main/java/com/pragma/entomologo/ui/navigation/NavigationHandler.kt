@@ -39,7 +39,7 @@ fun NavigationHandler(
                 insectId = backStackEntry.arguments?.getInt("insectId")?:-1,
                 counterInsect = backStackEntry.arguments?.getInt("counterInsectId")?:-1,
                 navigateToList = {
-
+                    navHostController.popBackStack(route = Routes.LIST_COUNTER_RECORDS.route, inclusive = false)
                 }
             )
         }
