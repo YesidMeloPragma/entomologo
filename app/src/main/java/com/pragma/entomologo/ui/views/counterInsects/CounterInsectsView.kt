@@ -67,11 +67,7 @@ fun CounterInsectsViewPreview() {
                         Log.i("Informacion", "Elementos")
                     }
 
-                    override fun saveRecord() {
-                        Log.i("Informacion", "Elementos")
-                    }
-
-                    override fun setInsectModel(insectModel: InsectModel) {
+                    override fun saveRecord(comment: String) {
                         Log.i("Informacion", "Elementos")
                     }
 
@@ -237,6 +233,7 @@ fun Body(
                 }
             ,
             currentState = currentState,
+            observation = observation,
             viewModel = viewModel
         )
         //endregion
@@ -420,13 +417,14 @@ fun Observation(
 fun SaveButton(
     modifier: Modifier,
     currentState: CounterInsectsViewModel.CounterInsectsUIState,
+    observation: MutableState<String>,
     viewModel: CounterInsectsViewModel
 ) {
     if(currentState.counter <= 0) return
     CustomRoundedButtonsWithElevation(
         modifier = modifier,
         text = stringResource(id = R.string.save),
-        onClick = {viewModel.saveRecord()}
+        onClick = {viewModel.saveRecord(comment = observation.value)}
     )
 }
 //endregion

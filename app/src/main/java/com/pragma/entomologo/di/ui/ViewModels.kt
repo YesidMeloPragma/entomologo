@@ -8,6 +8,7 @@ import com.pragma.entomologo.logic.usesCase.getImageProfileEntomologistUseCase.G
 import com.pragma.entomologo.logic.usesCase.getInsectWithImageByIdUseCase.GetInsectWithImageByIdUseCase
 import com.pragma.entomologo.logic.usesCase.isEntomologistRegisteredUseCase.IsEntomologistRegisteredUseCase
 import com.pragma.entomologo.logic.usesCase.registerEntomologistUseCase.RegisterEntomologistUseCase
+import com.pragma.entomologo.logic.usesCase.registerRecordInsectUseCase.RegisterRecordInsectUseCase
 import com.pragma.entomologo.ui.dialogs.errorDialog.viewModel.ErrorDialogViewModel
 import com.pragma.entomologo.ui.dialogs.errorDialog.viewModel.ErrorDialogViewModelImpl
 import com.pragma.entomologo.ui.dispatchers.DispatcherProvider
@@ -39,10 +40,12 @@ class ViewModels {
     @Provides
     fun provideCounterInsectsViewModel(
         dispatcherProvider: DispatcherProvider,
-        getInsectWithImageByIdUseCase: GetInsectWithImageByIdUseCase
+        getInsectWithImageByIdUseCase: GetInsectWithImageByIdUseCase,
+        registerRecordInsectUseCase: RegisterRecordInsectUseCase
     ) : CounterInsectsViewModel = CounterInsectsViewModelImpl(
         dispatcherProvider = dispatcherProvider,
-        getInsectWithImageByIdUseCase = getInsectWithImageByIdUseCase
+        getInsectWithImageByIdUseCase = getInsectWithImageByIdUseCase,
+        registerRecordInsectUseCase = registerRecordInsectUseCase
     )
 
     @Provides

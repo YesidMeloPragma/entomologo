@@ -27,10 +27,8 @@ class CounterRecordInsectLocalDatasourceImpl @Inject constructor(
             }
     }.flowOn(Dispatchers.IO)
 
-    override fun insert(counterRecordInsectModel: CounterRecordInsectModel): Flow<LongArray> = flow {
-        val ids = counterRecordInsectDao.insertElement(counterRecordInsectModel.convertToCounterRecordInsectEntity())
-        emit(ids)
-    }.flowOn(Dispatchers.IO)
+    override suspend fun insert(counterRecordInsectModel: CounterRecordInsectModel): LongArray
+            = counterRecordInsectDao.insertElement(counterRecordInsectModel.convertToCounterRecordInsectEntity())
 
     override fun update(counterRecordInsectModel: CounterRecordInsectModel): Flow<Boolean> = flow {
         counterRecordInsectDao.updateElement(counterRecordInsectModel.convertToCounterRecordInsectEntity())

@@ -36,9 +36,7 @@ abstract class CounterInsectsViewModel : ViewModel() {
 
     abstract fun removeInsectFromCounter()
 
-    abstract fun saveRecord()
-
-    abstract fun setInsectModel(insectModel: InsectModel)
+    abstract fun saveRecord(comment: String)
 
     abstract fun updateState(
         counter: Int = _uiState.value.counter,

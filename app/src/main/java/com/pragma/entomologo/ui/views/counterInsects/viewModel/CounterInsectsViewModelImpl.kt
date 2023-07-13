@@ -1,18 +1,21 @@
 package com.pragma.entomologo.ui.views.counterInsects.viewModel
 
 import androidx.lifecycle.viewModelScope
+import com.pragma.entomologo.logic.models.CounterRecordInsectModel
+import com.pragma.entomologo.logic.models.GeoLocationModel
 import com.pragma.entomologo.logic.models.InsectModel
 import com.pragma.entomologo.logic.usesCase.getInsectWithImageByIdUseCase.GetInsectWithImageByIdUseCase
+import com.pragma.entomologo.logic.usesCase.registerRecordInsectUseCase.RegisterRecordInsectUseCase
 import com.pragma.entomologo.ui.dispatchers.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CounterInsectsViewModelImpl @Inject constructor(
     private val dispatcherProvider: DispatcherProvider,
-    private val getInsectWithImageByIdUseCase: GetInsectWithImageByIdUseCase
+    private val getInsectWithImageByIdUseCase: GetInsectWithImageByIdUseCase,
+    private val registerRecordInsectUseCase: RegisterRecordInsectUseCase
 ) : CounterInsectsViewModel() {
 
     override fun loadCounterInsects(counterInsect: Int, insectId: Int) {
@@ -38,17 +41,22 @@ class CounterInsectsViewModelImpl @Inject constructor(
         }
     }
 
-    override fun saveRecord() {
+    override fun saveRecord(comment: String) {
         viewModelScope.launch(dispatcherProvider.io()) {
             updateState(statesCounterInsectsUI = StatesCounterInsectsUI.LOADING)
-            delay(3_000)
-            updateState(statesCounterInsectsUI = StatesCounterInsectsUI.NAVIGATE_TO_LIST)
-        }
-    }
-
-    override fun setInsectModel(insectModel: InsectModel) {
-        viewModelScope.launch(dispatcherProvider.io()) {
-            updateState(insectModel = insectModel)
+            val counter = CounterRecordInsectModel(
+                insect = _uiState.value.insectModel!!,
+                geoLocation = GeoLocationModel(lat = 1.0, lng = 1.0),
+                comment = comment,
+                count = _uiState.value.counter
+            )
+            registerRecordInsectUseCase
+                .invoke(counterRecordInsectModel = counter)
+                .collect {
+                    updateState(
+                        statesCounterInsectsUI = StatesCounterInsectsUI.NAVIGATE_TO_LIST
+                    )
+                }
         }
     }
 

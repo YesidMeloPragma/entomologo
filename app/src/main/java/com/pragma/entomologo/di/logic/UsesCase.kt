@@ -23,6 +23,8 @@ import com.pragma.entomologo.logic.usesCase.isEntomologistRegisteredUseCase.IsEn
 import com.pragma.entomologo.logic.usesCase.isEntomologistRegisteredUseCase.IsEntomologistRegisteredUseCaseImpl
 import com.pragma.entomologo.logic.usesCase.registerEntomologistUseCase.RegisterEntomologistUseCase
 import com.pragma.entomologo.logic.usesCase.registerEntomologistUseCase.RegisterEntomologistUseCaseImpl
+import com.pragma.entomologo.logic.usesCase.registerRecordInsectUseCase.RegisterRecordInsectUseCase
+import com.pragma.entomologo.logic.usesCase.registerRecordInsectUseCase.RegisterRecordInsectUseCaseImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -96,5 +98,14 @@ class UsesCase {
         entomologistImageDatasource = entomologistImageDatasource,
         entomologistLocalDatasource = entomologistLocalDatasource,
         entomologistSPDatasource = entomologistSPDatasource
+    )
+
+    @Provides
+    fun provideRegisterRecordInsectUseCase(
+        counterRecordInsectLocalDatasource: CounterRecordInsectLocalDatasource,
+        geoLocationLocalDatasource: GeoLocationLocalDatasource
+    ) : RegisterRecordInsectUseCase = RegisterRecordInsectUseCaseImpl(
+        counterRecordInsectLocalDatasource = counterRecordInsectLocalDatasource,
+        geoLocationLocalDatasource = geoLocationLocalDatasource
     )
 }
