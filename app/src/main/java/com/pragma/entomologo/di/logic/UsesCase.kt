@@ -49,12 +49,10 @@ class UsesCase {
     @Provides
     fun provideGetAllCountersInsectsUseCase(
         counterRecordInsectLocalDatasource: CounterRecordInsectLocalDatasource,
-        insectLocalDatasource: InsectLocalDatasource,
-        geoLocationLocalDatasource: GeoLocationLocalDatasource
+        insectImageLocalDatasource: InsectImageLocalDatasource
     ): GetAllCountersUseCase = GetAllCountersUseCaseImpl(
         counterRecordInsectLocalDatasource = counterRecordInsectLocalDatasource,
-        insectLocalDatasource = insectLocalDatasource,
-        geoLocationLocalDatasource = geoLocationLocalDatasource
+        insectImageLocalDatasource = insectImageLocalDatasource
     )
 
     @Provides

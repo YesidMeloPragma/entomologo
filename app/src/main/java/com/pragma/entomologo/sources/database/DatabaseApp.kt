@@ -1,11 +1,11 @@
 package com.pragma.entomologo.sources.database
 
 import android.content.Context
-import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.pragma.entomologo.sources.database.dao.CounterRecordInsectDao
+import com.pragma.entomologo.sources.database.dao.CounterRecordInsectDetailDao
 import com.pragma.entomologo.sources.database.dao.EntomologistDao
 import com.pragma.entomologo.sources.database.dao.GeoLocationDao
 import com.pragma.entomologo.sources.database.dao.InsectDao
@@ -85,10 +85,9 @@ abstract class DatabaseApp : RoomDatabase() {
         fun getDB() = db
     }
 
-    abstract  fun getCounterRecordInsectDao(): CounterRecordInsectDao
-
-    abstract  fun getEntomologistDao(): EntomologistDao
-
+    abstract fun getCounterRecordInsectDao(): CounterRecordInsectDao
+    abstract fun getCounterRecordInsectDetailDao(): CounterRecordInsectDetailDao
+    abstract fun getEntomologistDao(): EntomologistDao
     abstract fun getGeoLocationDao() : GeoLocationDao
     abstract fun getInsectDao() : InsectDao
 }

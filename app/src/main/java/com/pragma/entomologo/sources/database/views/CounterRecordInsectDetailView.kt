@@ -17,7 +17,7 @@ data class CounterRecordInsectDetailView(
     val insectId: Long,
     val specieName: String,
     val urlPhoto: String,
-    val geoLocation: Long,
+    val geoLocationId: Long,
     val lat: Double,
     val lng: Double
 )

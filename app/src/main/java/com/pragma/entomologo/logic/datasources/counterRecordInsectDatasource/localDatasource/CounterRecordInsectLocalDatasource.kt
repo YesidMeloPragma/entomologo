@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface CounterRecordInsectLocalDatasource {
     fun delete(counterRecordInsectModel: CounterRecordInsectModel): Flow<Boolean>
-    fun getAll(): Flow<List<CounterRecordInsectModel>>
+    suspend fun getAll(): List<CounterRecordInsectModel>
     suspend fun insert(counterRecordInsectModel: CounterRecordInsectModel): LongArray
     fun update(counterRecordInsectModel: CounterRecordInsectModel): Flow<Boolean>
 }
