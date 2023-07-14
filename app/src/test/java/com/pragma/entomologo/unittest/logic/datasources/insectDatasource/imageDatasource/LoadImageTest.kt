@@ -2,10 +2,7 @@ package com.pragma.entomologo.unittest.logic.datasources.insectDatasource.imageD
 
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
@@ -18,14 +15,11 @@ class LoadImageTest : BaseInsectImageLocalDatasourceTest() {
     fun successLoadImageTest() = runTest {
         //Given
         val pathImage = "Image"
-        coEvery { mockImageAppGallery.getImageStringBase64(path = any()) } returns flow { emit(pathImage) }
+        coEvery { mockImageAppGallery.getImageStringBase64(path = any()) } returns pathImage
 
         //when
-        insectImageLocalDatasource
-            .loadImageInsect(path = pathImage)
-            .collect{
-                Assert.assertEquals(pathImage, it)
-            }
+        val response = insectImageLocalDatasource.loadImageInsect(path = pathImage)
+        Assert.assertEquals(pathImage, response)
 
         //then
         coVerify(exactly = 1) { mockImageAppGallery.getImageStringBase64(path = any()) }

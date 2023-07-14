@@ -18,11 +18,8 @@ class InsertGeoLocationTest : BaseGeoLocationLocalDatasourceTest() {
         coEvery { mockGeoLocationDao.insertElement(element = anyVararg()) } answers { longArrayTest }
 
         //when
-        geoLocationLocalDatasource
-            .insertGeoLocation(geoLocationModel = mockGeoLocationModel)
-            .collect{
-                Assert.assertEquals(longArrayTest, it)
-            }
+        val response = geoLocationLocalDatasource.insertGeoLocation(geoLocationModel = mockGeoLocationModel)
+        Assert.assertEquals(longArrayTest, response)
 
         //then
         coVerify(exactly = 1) { mockGeoLocationDao.insertElement(element = anyVararg()) }

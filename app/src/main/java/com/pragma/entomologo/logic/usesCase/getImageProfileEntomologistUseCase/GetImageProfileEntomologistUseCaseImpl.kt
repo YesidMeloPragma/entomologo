@@ -14,15 +14,12 @@ class GetImageProfileEntomologistUseCaseImpl @Inject constructor(
 ) : GetImageProfileEntomologistUseCase {
 
     override fun invoke(): Flow<String?> = flow {
-        entomologistSPDatasource
-            .getCurrentEntomologist()
-            .collect{ entomologistModel ->
-                if(entomologistModel == null) {
-                    emit(null)
-                    return@collect
-                }
-                val image = entomologistImageDatasource.loadImageProfile(path = entomologistModel.urlPhoto)
-                emit(image)
-            }
+        val entomologistModel = entomologistSPDatasource.getCurrentEntomologist()
+        if(entomologistModel == null) {
+            emit(null)
+            return@flow
+        }
+        val image = entomologistImageDatasource.loadImageProfile(path = entomologistModel.urlPhoto)
+        emit(image)
     }.flowOn(Dispatchers.IO)
 }

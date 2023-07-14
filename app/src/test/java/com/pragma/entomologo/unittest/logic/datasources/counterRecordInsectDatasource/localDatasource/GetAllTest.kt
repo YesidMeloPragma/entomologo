@@ -22,11 +22,8 @@ class GetAllTest : BaseCounterRecordInsectLocalDatasourceTest() {
         }
         
         //when
-        counterRecordInsectLocalDatasource
-            .getAll()
-            .collect{
-                Assert.assertEquals(list.size, it.count())
-            }
+        val listModel = counterRecordInsectLocalDatasource.getAll()
+        Assert.assertEquals(list.size, listModel.size)
 
         //then
         verify(exactly = 1) { mockCounterRecordDao.getAll() }

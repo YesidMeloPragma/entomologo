@@ -1,9 +1,8 @@
 package com.pragma.entomologo.unittest.logic.usesCase.isEntomologistRegisteredUseCase
 
-import io.mockk.every
-import io.mockk.verify
+import io.mockk.coEvery
+import io.mockk.coVerify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
@@ -15,9 +14,7 @@ class InvokeTest : BaseIsEntomologistRegisteredUseCaseTest() {
     fun notRegisteredEntomologist() = runTest {
 
         //Given
-        every { mockEntomologistSPDatasource.getCurrentEntomologist() } returns flow {
-            emit(null)
-        }
+        coEvery { mockEntomologistSPDatasource.getCurrentEntomologist() } returns null
 
         //when
             isEntomologistRegisteredUseCase
@@ -27,16 +24,14 @@ class InvokeTest : BaseIsEntomologistRegisteredUseCaseTest() {
             }
 
         //then
-        verify (exactly = 1) { mockEntomologistSPDatasource.getCurrentEntomologist() }
+        coVerify (exactly = 1) { mockEntomologistSPDatasource.getCurrentEntomologist() }
     }
 
     @Test
     fun registeredEntomologist() = runTest {
 
         //Given
-        every { mockEntomologistSPDatasource.getCurrentEntomologist() } returns flow {
-            emit(mockEntomologistModel)
-        }
+        coEvery { mockEntomologistSPDatasource.getCurrentEntomologist() } returns mockEntomologistModel
 
         //when
         isEntomologistRegisteredUseCase
@@ -46,6 +41,6 @@ class InvokeTest : BaseIsEntomologistRegisteredUseCaseTest() {
             }
 
         //then
-        verify (exactly = 1) { mockEntomologistSPDatasource.getCurrentEntomologist() }
+        coVerify (exactly = 1) { mockEntomologistSPDatasource.getCurrentEntomologist() }
     }
 }

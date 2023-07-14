@@ -7,6 +7,7 @@ import com.pragma.entomologo.logic.models.CounterRecordInsectModel
 import com.pragma.entomologo.logic.models.GeoLocationModel
 import com.pragma.entomologo.logic.models.InsectModel
 import com.pragma.entomologo.sources.database.dao.CounterRecordInsectDao
+import com.pragma.entomologo.sources.database.dao.CounterRecordInsectDetailDao
 import com.pragma.entomologo.sources.database.entities.CounterRecordInsectEntity
 import com.pragma.entomologo.tools.MainCoroutineRule
 import io.mockk.impl.annotations.RelaxedMockK
@@ -40,6 +41,12 @@ abstract class BaseCounterRecordInsectLocalDatasourceTest {
     lateinit var mockInsectModel: InsectModel
 
     @RelaxedMockK
+    lateinit var mockCounterRecordInsectDao: CounterRecordInsectDao
+
+    @RelaxedMockK
+    lateinit var mockCounterRecordInsectDetailDao: CounterRecordInsectDetailDao
+
+    @RelaxedMockK
     lateinit var mockGeoLocationModel: GeoLocationModel
 
     protected lateinit var counterRecordInsectLocalDatasource: CounterRecordInsectLocalDatasource
@@ -47,7 +54,8 @@ abstract class BaseCounterRecordInsectLocalDatasourceTest {
     @Before
     fun setUp() {
         counterRecordInsectLocalDatasource = CounterRecordInsectLocalDatasourceImpl(
-            counterRecordInsectDao = mockCounterRecordDao
+            counterRecordInsectDao = mockCounterRecordInsectDao,
+            counterRecordInsectDetailDao = mockCounterRecordInsectDetailDao
         )
     }
 }

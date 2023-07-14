@@ -18,12 +18,8 @@ class InsertTest : BaseCounterRecordInsectLocalDatasourceTest() {
         coEvery { mockCounterRecordDao.insertElement(element = anyVararg()) } answers  { listIDs }
 
         //when
-        counterRecordInsectLocalDatasource
-            .insert(counterRecordInsectModel = mockCounterRecordInsectModel)
-            .collect {
-                Assert.assertEquals(listIDs.size, it.size)
-            }
-
+        val tmp = counterRecordInsectLocalDatasource.insert(counterRecordInsectModel = mockCounterRecordInsectModel)
+        Assert.assertEquals(listIDs.size, tmp.size)
         //then
         coVerify(exactly = 1) { mockCounterRecordDao.insertElement(element = anyVararg()) }
 
@@ -37,11 +33,8 @@ class InsertTest : BaseCounterRecordInsectLocalDatasourceTest() {
         coEvery { mockCounterRecordDao.insertElement(element = anyVararg()) } answers  { listIDs }
 
         //when
-        counterRecordInsectLocalDatasource
-            .insert(counterRecordInsectModel = mockCounterRecordInsectModel)
-            .collect {
-                Assert.assertEquals(listIDs.size, it.size)
-            }
+        val list = counterRecordInsectLocalDatasource.insert(counterRecordInsectModel = mockCounterRecordInsectModel)
+        Assert.assertEquals(listIDs.size, list.size)
 
         //then
         coVerify(exactly = 1) { mockCounterRecordDao.insertElement(element = anyVararg()) }
