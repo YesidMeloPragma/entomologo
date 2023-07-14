@@ -1,6 +1,7 @@
 package com.pragma.entomologo.sources.database
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -12,6 +13,7 @@ import com.pragma.entomologo.sources.database.entities.CounterRecordInsectEntity
 import com.pragma.entomologo.sources.database.entities.EntomologistEntity
 import com.pragma.entomologo.sources.database.entities.GeoLocationEntity
 import com.pragma.entomologo.sources.database.entities.InsectEntity
+import com.pragma.entomologo.sources.database.views.CounterRecordInsectDetailView
 
 /**
  * This class is in charge of managing the database management.
@@ -59,7 +61,10 @@ import com.pragma.entomologo.sources.database.entities.InsectEntity
         GeoLocationEntity::class,
         InsectEntity::class
     ],
-    version = 1,
+    views = [
+        CounterRecordInsectDetailView::class
+    ],
+    version = 2,
     exportSchema = false
 )
 abstract class DatabaseApp : RoomDatabase() {
@@ -72,7 +77,9 @@ abstract class DatabaseApp : RoomDatabase() {
             db = Room.databaseBuilder(
                 aplicationContext,
                 DatabaseApp::class.java, NameDB
-            ).build()
+            )
+                .addMigrations(MIGRATION_1_2)
+                .build()
         }
 
         fun getDB() = db
