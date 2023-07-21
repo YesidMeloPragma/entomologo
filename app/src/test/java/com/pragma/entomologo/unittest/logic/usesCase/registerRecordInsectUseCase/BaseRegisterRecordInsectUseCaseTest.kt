@@ -3,6 +3,8 @@ package com.pragma.entomologo.unittest.logic.usesCase.registerRecordInsectUseCas
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import com.pragma.entomologo.logic.datasources.counterRecordInsectDatasource.localDatasource.CounterRecordInsectLocalDatasource
 import com.pragma.entomologo.logic.datasources.geoLocationDatasource.localDatasource.GeoLocationLocalDatasource
+import com.pragma.entomologo.logic.models.CounterRecordInsectModel
+import com.pragma.entomologo.logic.models.GeoLocationModel
 import com.pragma.entomologo.logic.usesCase.registerRecordInsectUseCase.RegisterRecordInsectUseCase
 import com.pragma.entomologo.logic.usesCase.registerRecordInsectUseCase.RegisterRecordInsectUseCaseImpl
 import com.pragma.entomologo.tools.MainCoroutineRule
@@ -23,6 +25,12 @@ abstract class BaseRegisterRecordInsectUseCaseTest {
 
     @get:Rule
     val mockkRule = MockKRule(this)
+
+    @RelaxedMockK
+    lateinit var mockCounterRecordInsectModel: CounterRecordInsectModel
+
+    @RelaxedMockK
+    lateinit var mockGeoLocationModel: GeoLocationModel
 
     @RelaxedMockK
     lateinit var mockCounterRecordInsectLocalDatasource: CounterRecordInsectLocalDatasource
