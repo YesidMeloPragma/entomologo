@@ -8,6 +8,8 @@ import com.pragma.entomologo.logic.datasources.entomologistDatasource.localDatas
 import com.pragma.entomologo.logic.datasources.entomologistDatasource.localDatasource.EntomologistLocalDatasourceImpl
 import com.pragma.entomologo.logic.datasources.entomologistDatasource.sharedPreferencesDatasource.EntomologistSPDatasource
 import com.pragma.entomologo.logic.datasources.entomologistDatasource.sharedPreferencesDatasource.EntomologistSPDatasourceImpl
+import com.pragma.entomologo.logic.datasources.geoLocationDatasource.gpsDatasource.GPSDatasource
+import com.pragma.entomologo.logic.datasources.geoLocationDatasource.gpsDatasource.GPSDatasourceImpl
 import com.pragma.entomologo.logic.datasources.geoLocationDatasource.localDatasource.GeoLocationLocalDatasource
 import com.pragma.entomologo.logic.datasources.geoLocationDatasource.localDatasource.GeoLocationLocalDatasourceImpl
 import com.pragma.entomologo.logic.datasources.insectDatasource.imageDatasource.InsectImageLocalDatasource
@@ -20,6 +22,7 @@ import com.pragma.entomologo.sources.database.dao.CounterRecordInsectDetailDao
 import com.pragma.entomologo.sources.database.dao.EntomologistDao
 import com.pragma.entomologo.sources.database.dao.GeoLocationDao
 import com.pragma.entomologo.sources.database.dao.InsectDao
+import com.pragma.entomologo.sources.gpsLocation.GPSLocation
 import com.pragma.entomologo.sources.sharedPreferences.CustomSharedPreferences
 import dagger.Module
 import dagger.Provides
@@ -67,6 +70,13 @@ class Datasources {
         geoLocationDao: GeoLocationDao
     ) : GeoLocationLocalDatasource = GeoLocationLocalDatasourceImpl(
         geoLocationDao = geoLocationDao
+    )
+
+    @Provides
+    fun provideGPSDatasource(
+        gpsLocation: GPSLocation
+    ): GPSDatasource = GPSDatasourceImpl(
+        gpsLocation = gpsLocation
     )
 
     @Provides

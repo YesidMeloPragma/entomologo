@@ -11,7 +11,7 @@ fun CounterRecordInsectEntity.convertToCounterRecordInsectModel() : CounterRecor
         comment = this.comment,
         count = this.count,
         insect = InsectModel(id = this.insectId, specieName = "",  urlPhoto = "", moreInformation = ""),
-        geoLocation = GeoLocationModel(id = this.geoLocationId, lat = 0.0, lng = 0.0)
+        geoLocation = GeoLocationModel(id = this.geoLocationId, lat = 0.0, lng = 0.0, city = "")
     )
 }
 

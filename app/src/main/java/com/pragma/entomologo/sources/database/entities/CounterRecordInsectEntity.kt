@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import java.util.Date
 
 @Entity(
     foreignKeys = [
@@ -29,4 +30,5 @@ data class CounterRecordInsectEntity(
     var geoLocationId: Long,
     var comment: String,
     var count: Int,
+    var date: Date
 ) : BaseEntity()

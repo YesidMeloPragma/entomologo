@@ -8,6 +8,7 @@ import com.pragma.entomologo.sources.database.views.CounterRecordInsectDetailVie
 fun CounterRecordInsectDetailView.toCounterRecordInsectModel() : CounterRecordInsectModel {
     return CounterRecordInsectModel(
         id = this.id,
+        date = this.date,
         insect = InsectModel(
             id= insectId,
             specieName = specieName,
@@ -17,7 +18,8 @@ fun CounterRecordInsectDetailView.toCounterRecordInsectModel() : CounterRecordIn
         geoLocation = GeoLocationModel(
             id = geoLocationId,
             lat = lat,
-            lng = lng
+            lng = lng,
+            city = city
         ),
         comment = comment,
         count = count

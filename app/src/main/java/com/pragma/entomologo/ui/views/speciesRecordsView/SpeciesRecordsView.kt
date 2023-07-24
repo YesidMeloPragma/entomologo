@@ -44,7 +44,7 @@ fun SpeciesRecordsViewPreview() {
                     CounterRecordInsectModel(
                         id= counter.toLong(),
                         insect = InsectModel( specieName = "Hormiga $counter", urlPhoto = "", moreInformation = "aqui $counter"),
-                        geoLocation = GeoLocationModel(lat = 1.11, lng = 2.22),
+                        geoLocation = GeoLocationModel(lat = 1.11, lng = 2.22, city = ""),
                         comment = "Un comentario $counter",
                         count = counter,
                     )
@@ -198,6 +198,6 @@ private fun logicView(
     when(statusUI.loading) {
         SpeciesRecordsViewModel.StatusLoading.PRELOAD -> viewModel.loadListCounters()
         SpeciesRecordsViewModel.StatusLoading.LOADING,
-        SpeciesRecordsViewModel.StatusLoading.LOADED -> {}
+        SpeciesRecordsViewModel.StatusLoading.LOADED -> {println(" state: ${statusUI.loading}")}
     }
 }

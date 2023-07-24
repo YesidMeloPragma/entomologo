@@ -9,6 +9,7 @@ fun CounterRecordInsectModel.convertToCounterRecordInsectEntity() : CounterRecor
         insectId = this.insect.id ?: 0,
         geoLocationId = this.geoLocation.id ?: 0,
         comment = this.comment,
-        count = this.count
+        count = this.count,
+        date = this.date
     )
 }

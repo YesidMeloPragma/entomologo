@@ -3,25 +3,37 @@ package com.pragma.entomologo.ui.views.registerEntomologistView.viewModel
 import android.graphics.Bitmap
 import androidx.lifecycle.viewModelScope
 import com.pragma.entomologo.logic.models.EntomologistModel
+import com.pragma.entomologo.logic.usesCase.iHaveGPSPermissionUseCase.IHaveGPSPermissionUseCase
 import com.pragma.entomologo.logic.usesCase.registerEntomologistUseCase.RegisterEntomologistUseCase
+import com.pragma.entomologo.ui.dispatchers.DispatcherProvider
 import com.pragma.entomologo.ui.utils.extentions.convertToStringBase64
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class RegisterEntomologyViewModelImpl @Inject constructor(
-    private val registerEntomologistUseCase: RegisterEntomologistUseCase
+    private val dispatcherProvider: DispatcherProvider,
+    private val iHaveGPSPermissionUseCase: IHaveGPSPermissionUseCase,
+    private val registerEntomologistUseCase: RegisterEntomologistUseCase,
 ) : RegisterEntomologyViewModel() {
 
-    private val dispatcher = Dispatchers.IO
     private val _uiState = MutableStateFlow(value = StateUI())
 
     override fun stateUI(): StateFlow<StateUI> = _uiState
+    override fun checkPermissionsGPS() {
+        viewModelScope.launch(dispatcherProvider.io()) {
+            updateState(loading = true)
+            iHaveGPSPermissionUseCase
+                .invoke()
+                .collect{
+                    updateState(loading = false, statusSwitch = it)
+                }
+        }
+    }
 
     override fun saveEntomologist() {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(dispatcherProvider.io()) {
             updateState(
                 loading = true,
                 enableInteraction = false
@@ -43,19 +55,19 @@ class RegisterEntomologyViewModelImpl @Inject constructor(
     }
 
     override fun setCurrentImageProfile(image: Bitmap?) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(dispatcherProvider.io()) {
             updateState(bitmap = image)
         }
     }
 
     override fun setCurrentNameEntomologist(name: String) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(dispatcherProvider.io()) {
             updateState(name = name)
         }
     }
 
     override fun setCurrentStatusSwitch(statusSwitch: Boolean) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(dispatcherProvider.io()) {
             updateState(statusSwitch = statusSwitch)
         }
     }

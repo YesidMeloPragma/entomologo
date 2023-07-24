@@ -4,6 +4,7 @@ import com.pragma.entomologo.logic.datasources.counterRecordInsectDatasource.loc
 import com.pragma.entomologo.logic.datasources.entomologistDatasource.imageDatasource.EntomologistImageDatasource
 import com.pragma.entomologo.logic.datasources.entomologistDatasource.localDatasource.EntomologistLocalDatasource
 import com.pragma.entomologo.logic.datasources.entomologistDatasource.sharedPreferencesDatasource.EntomologistSPDatasource
+import com.pragma.entomologo.logic.datasources.geoLocationDatasource.gpsDatasource.GPSDatasource
 import com.pragma.entomologo.logic.datasources.geoLocationDatasource.localDatasource.GeoLocationLocalDatasource
 import com.pragma.entomologo.logic.datasources.insectDatasource.imageDatasource.InsectImageLocalDatasource
 import com.pragma.entomologo.logic.datasources.insectDatasource.localDatasource.InsectLocalDatasource
@@ -19,6 +20,8 @@ import com.pragma.entomologo.logic.usesCase.getImageProfileEntomologistUseCase.G
 import com.pragma.entomologo.logic.usesCase.getImageProfileEntomologistUseCase.GetImageProfileEntomologistUseCaseImpl
 import com.pragma.entomologo.logic.usesCase.getInsectWithImageByIdUseCase.GetInsectWithImageByIdUseCase
 import com.pragma.entomologo.logic.usesCase.getInsectWithImageByIdUseCase.GetInsectWithImageByIdUseCaseImpl
+import com.pragma.entomologo.logic.usesCase.iHaveGPSPermissionUseCase.IHaveGPSPermissionUseCase
+import com.pragma.entomologo.logic.usesCase.iHaveGPSPermissionUseCase.IHaveGPSPermissionUseCaseImpl
 import com.pragma.entomologo.logic.usesCase.isEntomologistRegisteredUseCase.IsEntomologistRegisteredUseCase
 import com.pragma.entomologo.logic.usesCase.isEntomologistRegisteredUseCase.IsEntomologistRegisteredUseCaseImpl
 import com.pragma.entomologo.logic.usesCase.registerEntomologistUseCase.RegisterEntomologistUseCase
@@ -81,6 +84,13 @@ class UsesCase {
     )
 
     @Provides
+    fun provideIHaveGPSPermissionUseCase(
+        gpsDatasource: GPSDatasource
+    ): IHaveGPSPermissionUseCase = IHaveGPSPermissionUseCaseImpl(
+        gpsDatasource = gpsDatasource
+    )
+
+    @Provides
     fun provideIsEntomologistRegisteredUseCase(
         entomologistSPDatasource: EntomologistSPDatasource
     ) : IsEntomologistRegisteredUseCase = IsEntomologistRegisteredUseCaseImpl(
@@ -101,9 +111,11 @@ class UsesCase {
     @Provides
     fun provideRegisterRecordInsectUseCase(
         counterRecordInsectLocalDatasource: CounterRecordInsectLocalDatasource,
-        geoLocationLocalDatasource: GeoLocationLocalDatasource
+        geoLocationLocalDatasource: GeoLocationLocalDatasource,
+        gpsDatasource: GPSDatasource
     ) : RegisterRecordInsectUseCase = RegisterRecordInsectUseCaseImpl(
         counterRecordInsectLocalDatasource = counterRecordInsectLocalDatasource,
-        geoLocationLocalDatasource = geoLocationLocalDatasource
+        geoLocationLocalDatasource = geoLocationLocalDatasource,
+        gpsDatasource = gpsDatasource
     )
 }

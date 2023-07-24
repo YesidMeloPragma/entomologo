@@ -6,6 +6,7 @@ import com.pragma.entomologo.logic.usesCase.getAllInsectsUseCase.GetAllInsectsUs
 import com.pragma.entomologo.logic.usesCase.getImageInsectUseCase.GetImageInsectUseCase
 import com.pragma.entomologo.logic.usesCase.getImageProfileEntomologistUseCase.GetImageProfileEntomologistUseCase
 import com.pragma.entomologo.logic.usesCase.getInsectWithImageByIdUseCase.GetInsectWithImageByIdUseCase
+import com.pragma.entomologo.logic.usesCase.iHaveGPSPermissionUseCase.IHaveGPSPermissionUseCase
 import com.pragma.entomologo.logic.usesCase.isEntomologistRegisteredUseCase.IsEntomologistRegisteredUseCase
 import com.pragma.entomologo.logic.usesCase.registerEntomologistUseCase.RegisterEntomologistUseCase
 import com.pragma.entomologo.logic.usesCase.registerRecordInsectUseCase.RegisterRecordInsectUseCase
@@ -93,8 +94,12 @@ class ViewModels {
 
     @Provides
     fun provideRegisterEntomologyViewModel(
+        dispatcherProvider: DispatcherProvider,
+        iHaveGPSPermissionUseCase: IHaveGPSPermissionUseCase,
         registerEntomologistUseCase: RegisterEntomologistUseCase
     ): RegisterEntomologyViewModel = RegisterEntomologyViewModelImpl(
+        dispatcherProvider = dispatcherProvider,
+        iHaveGPSPermissionUseCase = iHaveGPSPermissionUseCase,
         registerEntomologistUseCase = registerEntomologistUseCase
     )
 

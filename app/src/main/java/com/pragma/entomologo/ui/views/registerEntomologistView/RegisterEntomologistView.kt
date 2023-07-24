@@ -42,7 +42,7 @@ fun RegisterEntomologistViewPreview() {
     EntomologoTheme {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val constraintsId = createRef()
-            val _stateUI = MutableStateFlow(value = RegisterEntomologyViewModel.StateUI())
+            val stateUI = MutableStateFlow(value = RegisterEntomologyViewModel.StateUI())
 
             RegisterEntomologistView(modifier = Modifier.constrainAs(constraintsId) {
                 bottom.linkTo(parent.bottom)
@@ -53,7 +53,8 @@ fun RegisterEntomologistViewPreview() {
                 height = Dimension.fillToConstraints
             },
                 viewModel = object: RegisterEntomologyViewModel() {
-                    override fun stateUI(): StateFlow<StateUI> = _stateUI
+                    override fun stateUI(): StateFlow<StateUI> = stateUI
+                    override fun checkPermissionsGPS() {updateState()}
 
                     override fun saveEntomologist() { updateState() }
 
@@ -68,15 +69,15 @@ fun RegisterEntomologistViewPreview() {
                     }
 
                     private fun updateState(
-                        bitmap: Bitmap? = _stateUI.value.bitmap,
-                        enableInteraction: Boolean = _stateUI.value.enableInteraction,
-                        loading: Boolean = _stateUI.value.loading,
-                        name: String = _stateUI.value.name,
-                        navigateToListRecords: Boolean = _stateUI.value.navigateToListRecords,
-                        statusSwitch: Boolean = _stateUI.value.statusSwitch,
+                        bitmap: Bitmap? = stateUI.value.bitmap,
+                        enableInteraction: Boolean = stateUI.value.enableInteraction,
+                        loading: Boolean = stateUI.value.loading,
+                        name: String = stateUI.value.name,
+                        navigateToListRecords: Boolean = stateUI.value.navigateToListRecords,
+                        statusSwitch: Boolean = stateUI.value.statusSwitch,
                     ) {
                         viewModelScope.launch {
-                            _stateUI.emit(StateUI(
+                            stateUI.emit(StateUI(
                                 bitmap = bitmap,
                                 enableInteraction = enableInteraction,
                                 loading = loading,
@@ -103,11 +104,12 @@ fun RegisterEntomologistView(
 ) {
     //region variables
     val stateUI by viewModel.stateUI().collectAsState(initial = RegisterEntomologyViewModel.StateUI())
+    val name = rememberSaveable{ mutableStateOf("") }
     logicUI(
         stateUI = stateUI,
-        navigateToListRecords = navigateToListRecords
+        navigateToListRecords = navigateToListRecords,
+        viewModel = viewModel
     )
-    val name = rememberSaveable{ mutableStateOf("") }
     //endregion
 
     ConstraintLayout(modifier = modifier.background(color = MaterialTheme.colorScheme.secondaryContainer)) {
@@ -217,7 +219,9 @@ fun RegisterEntomologistView(
 private fun logicUI(
     stateUI: RegisterEntomologyViewModel.StateUI,
     navigateToListRecords: ()->Unit,
+    viewModel: RegisterEntomologyViewModel
 ) {
+    viewModel.checkPermissionsGPS()
     if(!stateUI.navigateToListRecords) return
     if (!navigate) return
     navigate = false

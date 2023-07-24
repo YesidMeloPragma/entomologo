@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.pragma.entomologo.sources.database.dao.CounterRecordInsectDao
 import com.pragma.entomologo.sources.database.dao.CounterRecordInsectDetailDao
 import com.pragma.entomologo.sources.database.dao.EntomologistDao
@@ -64,25 +65,28 @@ import com.pragma.entomologo.sources.database.views.CounterRecordInsectDetailVie
     views = [
         CounterRecordInsectDetailView::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
+@TypeConverters(DateConverter::class)
 abstract class DatabaseApp : RoomDatabase() {
 
     companion object {
-        private val NameDB = "EntomologistApp"
-        private lateinit var db: DatabaseApp
+        val NameDB = "EntomologistApp"
+        private var db: DatabaseApp? = null
 
         fun startDatabase(aplicationContext: Context) {
+            if(db != null) return
             db = Room.databaseBuilder(
                 aplicationContext,
                 DatabaseApp::class.java, NameDB
             )
+                .addMigrations(MIGRATION_2_3)
                 .addMigrations(MIGRATION_1_2)
                 .build()
         }
 
-        fun getDB() = db
+        fun getDB() = db!!
     }
 
     abstract fun getCounterRecordInsectDao(): CounterRecordInsectDao

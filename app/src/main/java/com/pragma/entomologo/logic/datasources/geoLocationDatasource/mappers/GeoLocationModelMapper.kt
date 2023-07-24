@@ -8,5 +8,6 @@ fun GeoLocationModel.convertToGeoLocationEntity() : GeoLocationEntity {
         id = this.id,
         lat = this.lat,
         lng = this.lng,
+        city = this.city
     )
 }

@@ -10,5 +10,6 @@ data class GeoLocationEntity(
     @ColumnInfo(index = true)
     var id: Long?,
     var lat: Double,
-    var lng: Double
+    var lng: Double,
+    var city: String
 ): BaseEntity()

@@ -25,6 +25,7 @@ import com.pragma.entomologo.logic.models.GeoLocationModel
 import com.pragma.entomologo.logic.models.InsectModel
 import com.pragma.entomologo.ui.theme.EntomologoTheme
 import com.pragma.entomologo.ui.utils.extentions.getBitmap
+import com.pragma.entomologo.ui.utils.formats.DateFormats
 
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO, device = Devices.PHONE)
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, device = Devices.PHONE)
@@ -45,7 +46,7 @@ fun ItemListCounterRecordPreview() {
                 counter = CounterRecordInsectModel(
                     id= 1,
                     insect = InsectModel( specieName = "Hormiga", urlPhoto = "", moreInformation = "aqui"),
-                    geoLocation = GeoLocationModel(lat = 1.11, lng = 2.22),
+                    geoLocation = GeoLocationModel(lat = 1.11, lng = 2.22, city = ""),
                     comment = "Un comentario",
                     count = 6,
                 )
@@ -134,7 +135,7 @@ fun ItemListCounterRecord(
                 style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.onSurface)
             )
             Text(
-                text = "Ciudad 0/00/0000",
+                text = "${counter.geoLocation.city} ${DateFormats.Slash.dateToFormat(date = counter.date)}",
                 modifier = Modifier.constrainAs(cityId){
                     bottom.linkTo(parent.bottom)
                     end.linkTo(parent.end)

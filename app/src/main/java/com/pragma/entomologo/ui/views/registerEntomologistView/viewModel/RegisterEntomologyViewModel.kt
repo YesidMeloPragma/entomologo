@@ -16,7 +16,7 @@ abstract class RegisterEntomologyViewModel : ViewModel() {
     )
 
     abstract fun stateUI() : StateFlow<StateUI>
-
+    abstract fun checkPermissionsGPS()
     abstract fun saveEntomologist()
     abstract fun setCurrentImageProfile(image: Bitmap?)
     abstract fun setCurrentNameEntomologist(name: String)

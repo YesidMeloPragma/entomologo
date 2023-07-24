@@ -48,7 +48,7 @@ class CounterInsectsViewModelImpl @Inject constructor(
             updateState(statesCounterInsectsUI = StatesCounterInsectsUI.LOADING)
             val counter = CounterRecordInsectModel(
                 insect = _uiState.value.insectModel!!,
-                geoLocation = GeoLocationModel(lat = 1.0, lng = 1.0),
+                geoLocation = GeoLocationModel(lat = 1.0, lng = 1.0, city = ""),
                 comment = comment,
                 count = _uiState.value.counter
             )
