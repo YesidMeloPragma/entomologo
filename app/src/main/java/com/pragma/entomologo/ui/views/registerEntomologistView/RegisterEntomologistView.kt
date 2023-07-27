@@ -1,6 +1,5 @@
 package com.pragma.entomologo.ui.views.registerEntomologistView
 
-
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import androidx.compose.foundation.background
@@ -8,9 +7,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -21,6 +22,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewModelScope
 import com.pragma.entomologo.R
+import com.pragma.entomologo.ui.activities.ActivityState
 import com.pragma.entomologo.ui.theme.EntomologoTheme
 import com.pragma.entomologo.ui.views.customs.buttons.CustomButtomOutline
 import com.pragma.entomologo.ui.views.customs.buttons.CustomRoundedButtonsWithElevation
@@ -29,87 +31,31 @@ import com.pragma.entomologo.ui.views.customs.images.CustomCircularImage
 import com.pragma.entomologo.ui.views.customs.switchs.CustomSwitchRounded
 import com.pragma.entomologo.ui.views.customs.texts.CustomTextField
 import com.pragma.entomologo.ui.views.registerEntomologistView.viewModel.RegisterEntomologyViewModel
+import com.pragma.entomologo.ui.views.requestPermisions.EnablePermissionsNecessariesInConfigApp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlin.system.exitProcess
 
 private var navigate = true
-
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO, device = Devices.PHONE)
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, device = Devices.PHONE)
-@Composable
-fun RegisterEntomologistViewPreview() {
-    EntomologoTheme {
-        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val constraintsId = createRef()
-            val stateUI = MutableStateFlow(value = RegisterEntomologyViewModel.StateUI())
-
-            RegisterEntomologistView(modifier = Modifier.constrainAs(constraintsId) {
-                bottom.linkTo(parent.bottom)
-                end.linkTo(parent.end)
-                start.linkTo(parent.start)
-                top.linkTo(parent.top)
-                width = Dimension.fillToConstraints
-                height = Dimension.fillToConstraints
-            },
-                viewModel = object: RegisterEntomologyViewModel() {
-                    override fun stateUI(): StateFlow<StateUI> = stateUI
-                    override fun checkPermissionsGPS() {updateState()}
-
-                    override fun saveEntomologist() { updateState() }
-
-                    override fun setCurrentImageProfile(image: Bitmap?) { updateState() }
-
-                    override fun setCurrentNameEntomologist(name: String) {
-                        updateState(name = name)
-                    }
-
-                    override fun setCurrentStatusSwitch(statusSwitch: Boolean) {
-                        updateState(statusSwitch = statusSwitch)
-                    }
-
-                    private fun updateState(
-                        bitmap: Bitmap? = stateUI.value.bitmap,
-                        enableInteraction: Boolean = stateUI.value.enableInteraction,
-                        loading: Boolean = stateUI.value.loading,
-                        name: String = stateUI.value.name,
-                        navigateToListRecords: Boolean = stateUI.value.navigateToListRecords,
-                        statusSwitch: Boolean = stateUI.value.statusSwitch,
-                    ) {
-                        viewModelScope.launch {
-                            stateUI.emit(StateUI(
-                                bitmap = bitmap,
-                                enableInteraction = enableInteraction,
-                                loading = loading,
-                                name = name,
-                                navigateToListRecords = navigateToListRecords,
-                                statusSwitch = statusSwitch,
-                            ))
-                        }
-                    }
-                },
-                navigateToCatureImage = {},
-                navigateToListRecords = {},
-            )
-        }
-    }
-}
-
 @Composable
 fun RegisterEntomologistView(
     modifier: Modifier,
     viewModel: RegisterEntomologyViewModel,
     navigateToCatureImage : ()->Unit,
     navigateToListRecords: ()->Unit,
+    stateActivity : MutableState<ActivityState>,
 ) {
     //region variables
     val stateUI by viewModel.stateUI().collectAsState(initial = RegisterEntomologyViewModel.StateUI())
     val name = rememberSaveable{ mutableStateOf("") }
     logicUI(
-        stateUI = stateUI,
         navigateToListRecords = navigateToListRecords,
-        viewModel = viewModel
+        stateUI = stateUI,
+        stateActivity = stateActivity,
+        viewModel = viewModel,
     )
+    val showPermissionDialog = remember { mutableStateOf(false) }
     //endregion
 
     ConstraintLayout(modifier = modifier.background(color = MaterialTheme.colorScheme.secondaryContainer)) {
@@ -212,11 +158,58 @@ fun RegisterEntomologistView(
         if(stateUI.loading) {
             ProgressDialog()
         }
+        RequestPermission(
+            currentStateUI = stateUI,
+            showPermissionDialog = showPermissionDialog
+        )
         //endregion
     }
 }
+//region dialog permission
+@Composable
+fun RequestPermission(
+    currentStateUI: RegisterEntomologyViewModel.StateUI,
+    showPermissionDialog: MutableState<Boolean>
+) {
+
+    if (currentStateUI.statusSwitch) {
+        showPermissionDialog.value = false
+        return
+    }
+
+    showPermissionDialog.value = true
+    EnablePermissionsNecessariesInConfigApp(
+        showDialog = showPermissionDialog,
+        actionCancel = {
+            showPermissionDialog.value = false
+            exitProcess(0)
+        },
+        actionDismiss = {
+            showPermissionDialog.value = false
+        }
+    )
+}
+//endregion
+
 
 private fun logicUI(
+    navigateToListRecords: ()->Unit,
+    stateUI: RegisterEntomologyViewModel.StateUI,
+    stateActivity : MutableState<ActivityState>,
+    viewModel: RegisterEntomologyViewModel
+) {
+    handlerStateComposable(
+        stateUI = stateUI,
+        navigateToListRecords = navigateToListRecords,
+        viewModel = viewModel
+    )
+    handlerStateComposableBasedInActivity(
+        stateActivity = stateActivity,
+        viewModel = viewModel
+    )
+}
+
+private fun handlerStateComposable(
     stateUI: RegisterEntomologyViewModel.StateUI,
     navigateToListRecords: ()->Unit,
     viewModel: RegisterEntomologyViewModel
@@ -227,3 +220,69 @@ private fun logicUI(
     navigate = false
     navigateToListRecords.invoke()
 }
+
+private fun handlerStateComposableBasedInActivity(
+    stateActivity : MutableState<ActivityState>,
+    viewModel: RegisterEntomologyViewModel
+) {
+    if(stateActivity.value != ActivityState.RESUME) return
+    viewModel.checkPermissionsGPS()
+}
+
+//region preview
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO, device = Devices.PHONE)
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, device = Devices.PHONE)
+@Composable
+fun RegisterEntomologistViewPreview() {
+    EntomologoTheme {
+        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+            val constraintsId = createRef()
+            val stateUI = MutableStateFlow(value = RegisterEntomologyViewModel.StateUI())
+            val stateActivity : MutableState<ActivityState> = remember{ mutableStateOf(value = ActivityState.RESUME) }
+            RegisterEntomologistView(modifier = Modifier.constrainAs(constraintsId) {
+                bottom.linkTo(parent.bottom)
+                end.linkTo(parent.end)
+                start.linkTo(parent.start)
+                top.linkTo(parent.top)
+                width = Dimension.fillToConstraints
+                height = Dimension.fillToConstraints
+            },
+                viewModel = object: RegisterEntomologyViewModel() {
+                    override fun stateUI(): StateFlow<StateUI> = stateUI
+                    override fun checkPermissionsGPS() {updateState(statusSwitch = true)}
+                    override fun saveEntomologist() { updateState() }
+                    override fun setCurrentImageProfile(image: Bitmap?) { updateState() }
+                    override fun setCurrentNameEntomologist(name: String) { updateState(name = name) }
+
+                    override fun setCurrentStatusSwitch(statusSwitch: Boolean) {
+                        updateState(statusSwitch = statusSwitch)
+                    }
+
+                    private fun updateState(
+                        bitmap: Bitmap? = stateUI.value.bitmap,
+                        enableInteraction: Boolean = stateUI.value.enableInteraction,
+                        loading: Boolean = stateUI.value.loading,
+                        name: String = stateUI.value.name,
+                        navigateToListRecords: Boolean = stateUI.value.navigateToListRecords,
+                        statusSwitch: Boolean = stateUI.value.statusSwitch,
+                    ) {
+                        viewModelScope.launch {
+                            stateUI.emit(StateUI(
+                                bitmap = bitmap,
+                                enableInteraction = enableInteraction,
+                                loading = loading,
+                                name = name,
+                                navigateToListRecords = navigateToListRecords,
+                                statusSwitch = statusSwitch,
+                            ))
+                        }
+                    }
+                },
+                navigateToCatureImage = {},
+                navigateToListRecords = {},
+                stateActivity = stateActivity
+            )
+        }
+    }
+}
+//endregion

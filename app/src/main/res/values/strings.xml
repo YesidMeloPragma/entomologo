@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="Typos">
     <string name="app_name">entomologo</string>
     <string name="name_specie">Nombre Especie</string>
     <string name="more_information">Más información</string>
@@ -15,4 +15,21 @@
     <string name="upload_image">Subir imagen</string>
     <string name="add_comment">Agregar comentario</string>
     <string name="save">Guardar</string>
+    <string name="permission_write">Permisos de escritura</string>
+    <string name="permission_write_detail">Este permiso es requerido es para almacenar imagenes dentro del dispositivo para el correcto funcionamiento de la aplicacion.</string>
+    <string name="permission_write_detail_required">Has bloqueado permanentemente el permiso de escritura de datos. Este permiso es requerido para el correcto funcionamiento de la aplicacion la momento de mostrar imagenes. Por favor habilitalo</string>
+    <string name="permission_read">Permisos lectura</string>
+    <string name="permission_read_detail">Este permiso es requerido para leer los archivos de imagenes generados por la aplicacion para su lectura.</string>
+    <string name="permission_read_detail_required">Este permiso es requerido para el correcto funcionamiento de la aplicacion al momento de mostrar imagenes. Puedes habilitarlo en informacion de la aplicacion.</string>
+    <string name="go_to_permissions_app">Ir a permisos de la aplicacion</string>
+    <string name="cancel">Cancelar</string>
+    <string name="enable_permissions_detail">Debes habilitar los permisos para acceder al almacenamiento y Geolocalization.</string>
+    <string name="enable_permissions">Permisos aplicación</string>
+    <string name="permissions">Permisos aplicacion</string>
+    <string name="permissions_required">Estos permisos son necesarios para el correcto funcionamiento de la aplicación.</string>
+    <string name="storage">Almacenamiento</string>
+    <string name="ubication">Ubicación</string>
+    <string name="enable_permissions_ubication">Captura la ubicación geográfica de la muestra al momento de adicionarla a la lista de muestras.</string>
+    <string name="enable">Habilitar</string>
+    <string name="without_some_permission">Si falta algun permiso no puede funcionar correctamente la aplicacion. si das en cancelar la aplicacion se cerrara de manera automatica por falta permisos</string>
 </resources>

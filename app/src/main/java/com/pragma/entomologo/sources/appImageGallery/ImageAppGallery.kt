@@ -22,6 +22,7 @@ package com.pragma.entomologo.sources.appImageGallery
  * @author Elver Yesid Melo
  */
 interface ImageAppGallery {
+    suspend fun iHaveStoragePermissions(): Boolean
     suspend fun getImageStringBase64(path: String) : String?
     suspend fun saveImage(stringBase64: String, path: String, fileName: String) : String?
     suspend fun existsImage(path: String): Boolean

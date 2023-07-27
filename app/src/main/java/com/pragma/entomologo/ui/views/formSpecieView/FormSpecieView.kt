@@ -12,6 +12,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -23,6 +24,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pragma.entomologo.R
 import com.pragma.entomologo.logic.models.InsectModel
+import com.pragma.entomologo.ui.activities.ActivityState
 import com.pragma.entomologo.ui.dialogs.errorDialog.ErrorDialogView
 import com.pragma.entomologo.ui.theme.EntomologoTheme
 import com.pragma.entomologo.ui.views.app.imageProfile.ImageProfileView
@@ -56,6 +58,7 @@ fun FormSpecieViewPreview() {
         ) {
             val constraintsId = createRef()
             val statusImageProfileUI = MutableStateFlow(value = ImageProfileViewModel.ImageProfileUIState())
+            val stateActivity : MutableState<ActivityState> = remember { mutableStateOf(value = ActivityState.RESUME) }
             FormSpecieView(modifier = Modifier.constrainAs(constraintsId) {
                 bottom.linkTo(parent.bottom)
                 end.linkTo(parent.end)
@@ -92,7 +95,8 @@ fun FormSpecieViewPreview() {
                     }
 
                 },
-                navigateToListRecordsInsect = {}
+                navigateToListRecordsInsect = {},
+                stateActivity = stateActivity
             )
         }
     }
@@ -105,7 +109,8 @@ fun FormSpecieView(
     imageProfileViewModel : ImageProfileViewModel = hiltViewModel<ImageProfileViewModelImpl>(),
     loadImageInsectFromGalleryViewModel: LoadImageInsectFromGalleryViewModel = hiltViewModel<LoadImageInsectFromGalleryViewModelImpl>(),
     navigateToImageProfile: () -> Unit,
-    navigateToListRecordsInsect: (insect: InsectModel) -> Unit
+    navigateToListRecordsInsect: (insect: InsectModel) -> Unit,
+    stateActivity : MutableState<ActivityState>,
 ) {
     //region stateObserver
     val currentState by viewModel.uiState.collectAsState(initial = FormSpecieViewModel.FormSpecieUIState())

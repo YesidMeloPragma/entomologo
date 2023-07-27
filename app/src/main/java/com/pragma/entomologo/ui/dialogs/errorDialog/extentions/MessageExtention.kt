@@ -10,5 +10,6 @@ import com.pragma.entomologo.logic.excepciones.TypeExceptions
         TypeExceptions.WITHOUT_URL_DESCRIPTION-> R.string.without_url_description_insect
         TypeExceptions.WITHOUT_NAMESPECIE -> R.string.without_namespecie_detail
         TypeExceptions.WITHOUT_IMAGE_SPECIE -> R.string.without_image_specie_detail
+        TypeExceptions.WITHOUT_PERMISSIONS_STORAGE -> R.string.enable_permissions_detail
     }
 }

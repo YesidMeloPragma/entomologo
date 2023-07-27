@@ -1,17 +1,37 @@
 package com.pragma.entomologo.sources.appImageGallery
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Environment
 import android.util.Base64
 import android.util.Log
+import androidx.core.content.ContextCompat
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import javax.inject.Inject
 
-class ImageAppGalleryImpl constructor(
-    private val basePath: String = "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)}"): ImageAppGallery {
+class ImageAppGalleryImpl @Inject constructor(
+    private val basePath: String,
+    private val context: Context
+): ImageAppGallery {
+    override suspend fun iHaveStoragePermissions(): Boolean {
+        val permissions = arrayOf(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+        for (permission in permissions) {
+            val permissionStatus = ContextCompat.checkSelfPermission(context, permission)
+            if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                return false
+            }
+        }
+        return true
+    }
+
     override suspend fun getImageStringBase64(path: String): String? {
         val file = File("$basePath/$path")
         if(!file.exists()) {
@@ -54,10 +74,9 @@ class ImageAppGalleryImpl constructor(
             out.flush()
             out.close()
             "$path/$fileName"
-            //file.path?:""
         } catch (e: Exception) {
             Log.e("err", "Surgio un error", e)
-            ""
+            "$path/$fileName"
         }
         //endregion
     }

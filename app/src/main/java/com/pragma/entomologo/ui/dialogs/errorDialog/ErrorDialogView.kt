@@ -2,6 +2,7 @@ package com.pragma.entomologo.ui.dialogs.errorDialog
 
 import android.content.res.Configuration
 import android.util.Log
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.aspectRatio
@@ -49,7 +50,8 @@ fun ErrorDialogViewPreview() {
                         Log.i("Informacion", "Informacion")
                     }
                 },
-                onDismiss = {}
+                onDismiss = {},
+                onCancel = {}
             )
         }
     }
@@ -59,7 +61,8 @@ fun ErrorDialogViewPreview() {
 fun ErrorDialogView(
     exception: LogicException = LogicException(),
     viewModel: ErrorDialogViewModel = hiltViewModel<ErrorDialogViewModelImpl>(),
-    onDismiss: (Boolean) -> Unit
+    onDismiss: (Boolean) -> Unit,
+    onCancel: (() -> Unit)? = null,
 ) {
     Dialog(
         onDismissRequest = { onDismiss.invoke(true) },
@@ -83,6 +86,7 @@ fun ErrorDialogView(
                         }
                         .background(color = MaterialTheme.colorScheme.background),
                     onDismiss = onDismiss,
+                    onCancel = onCancel,
                     exception = exception,
                     viewModel = viewModel
                 )
@@ -97,10 +101,15 @@ fun ContentDialog(
     exception: LogicException,
     modifier: Modifier,
     onDismiss: (Boolean) -> Unit,
+    onCancel: (() -> Unit)? = null,
     viewModel: ErrorDialogViewModel
 ) {
     ConstraintLayout(modifier = modifier) {
-        val (headerId, messageId, buttonId) = createRefs()
+        val (
+            headerId,
+            messageId,
+            buttonId,
+        buttonCancelId) = createRefs()
         Header(
             exception = exception,
             modifier = Modifier.constrainAs(headerId){
@@ -110,16 +119,45 @@ fun ContentDialog(
                 width = Dimension.fillToConstraints
             }
         )
-        ButtonDialog(
-            modifier = Modifier.constrainAs(buttonId){
-                bottom.linkTo(parent.bottom)
-                end.linkTo(parent.end)
-                start.linkTo(parent.start)
-                width = Dimension.fillToConstraints
-            },
-            onDismiss = onDismiss,
-            viewModel = viewModel
-        )
+        if (onCancel == null) {
+            ButtonDialog(
+                modifier = Modifier.constrainAs(buttonId){
+                    bottom.linkTo(parent.bottom)
+                    end.linkTo(parent.end)
+                    start.linkTo(parent.start)
+                    width = Dimension.fillToConstraints
+                },
+                onDismiss = onDismiss,
+                viewModel = viewModel,
+                textStringId = R.string.accept
+            )
+        } else {
+            ButtonDialog(
+                modifier = Modifier.constrainAs(buttonId){
+                    bottom.linkTo(parent.bottom)
+                    end.linkTo(parent.end)
+                    start.linkTo(buttonCancelId.end)
+                    width = Dimension.fillToConstraints
+                },
+                onDismiss = onDismiss,
+                viewModel = viewModel,
+                textStringId = R.string.accept,
+                hasTwoButtons = true
+            )
+            ButtonDialog(
+                modifier = Modifier.constrainAs(buttonCancelId){
+                    bottom.linkTo(parent.bottom)
+                    end.linkTo(buttonId.start)
+                    start.linkTo(parent.start)
+                    width = Dimension.fillToConstraints
+                },
+                onDismiss = { onCancel.invoke() },
+                viewModel = viewModel,
+                textStringId = R.string.cancel,
+                hasTwoButtons = true
+            )
+        }
+
         Message(
             modifier = Modifier.constrainAs(messageId){
                 bottom.linkTo(buttonId.top)
@@ -160,11 +198,13 @@ fun Header(
 @Composable
 fun ButtonDialog(
     modifier: Modifier,
+    @StringRes textStringId: Int,
     onDismiss: (Boolean) -> Unit,
-    viewModel: ErrorDialogViewModel
+    viewModel: ErrorDialogViewModel,
+    hasTwoButtons: Boolean = false
 ) {
     ConstraintLayout(modifier = modifier
-        .aspectRatio(7.4f)
+        .aspectRatio(if(!hasTwoButtons) 7.4f else  5.8f)
         .background(color = MaterialTheme.colorScheme.onBackground)
         .clickable {
             onDismiss.invoke(true)
@@ -173,7 +213,7 @@ fun ButtonDialog(
     ) {
         val textId = createRef()
         Text(
-            text = stringResource(id = R.string.accept),
+            text = stringResource(id = textStringId),
             style = MaterialTheme.typography.headlineSmall.copy(
                 color = MaterialTheme.colorScheme.background
             ),

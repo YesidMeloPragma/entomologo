@@ -9,32 +9,41 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.pragma.entomologo.R
 
 @Composable
-fun RequestTheNecessaryPermits(
+fun EnablePermissionsNecessariesInConfigApp(
     showDialog: MutableState<Boolean>,
-    actionCancel: ()-> Unit
+    actionCancel: ()-> Unit,
+    actionDismiss: (()-> Unit) ?= null
 ) {
     if (!showDialog.value) return
 
     val context = LocalContext.current
 
     AlertDialog(
-        onDismissRequest = { /* No hacer nada */ },
-        title = { Text("Permisos Multimedia") },
-        text = { Text("Estos permisos son necesarios para poder capturar imagenes desde tu galeria para vincularla al perfil") },
+        onDismissRequest = { actionDismiss?.invoke() },
+        title = { Text(stringResource(id = R.string.permissions)) },
+        text = {
+                Text(
+                    "${stringResource(id = R.string.permissions_required)}:\n" +
+                            "1. ${stringResource(id = R.string.storage)}:\n ${stringResource(id = R.string.enable_permissions_detail)}\n" +
+                            "2. ${stringResource(id = R.string.ubication)}:\n ${stringResource(id = R.string.enable_permissions_ubication)}\n" +
+                            "${stringResource(id = R.string.without_some_permission)}.",
+                )
+               },
         confirmButton = {
             Button(
                 onClick = {
                     showDialog.value = false
-
                     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                     val uri = Uri.fromParts("package", context.applicationContext.packageName, null)
                     intent.data = uri
                     context.startActivity(intent)
                 }
             ) {
-                Text("habilitar")
+                Text(stringResource(id = R.string.enable))
             }
         },
         dismissButton = {
@@ -44,7 +53,7 @@ fun RequestTheNecessaryPermits(
                     actionCancel.invoke()
                 }
             ) {
-                Text("cancelar")
+                Text(stringResource(id = R.string.cancel))
             }
         }
     )

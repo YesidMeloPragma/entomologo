@@ -8,6 +8,8 @@ class InsectImageLocalDatasourceImpl @Inject constructor(
 ) : InsectImageLocalDatasource {
 
     override suspend fun existsImage(path: String): Boolean = imageAppGallery.existsImage(path = path)
+    override suspend fun iHaveStoragePermissions(): Boolean
+        = imageAppGallery.iHaveStoragePermissions()
 
     override suspend fun loadImageInsect(path: String): String? = imageAppGallery.getImageStringBase64(path = path)
 

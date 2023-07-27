@@ -2,12 +2,14 @@ package com.pragma.entomologo.ui.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.pragma.entomologo.ui.activities.ActivityState
 import com.pragma.entomologo.ui.activities.ViewModelHandler
 import com.pragma.entomologo.ui.views.counterInsects.CounterInsectsView
 import com.pragma.entomologo.ui.views.formSpecieView.FormSpecieView
@@ -19,7 +21,8 @@ import com.pragma.entomologo.ui.views.splashView.SplashView
 
 @Composable
 fun NavigationHandler(
-    viewModelHandler: ViewModelHandler
+    viewModelHandler: ViewModelHandler,
+    stateActivity : MutableState<ActivityState>
 ) {
     val navHostController = rememberNavController()
     NavHost(
@@ -40,7 +43,8 @@ fun NavigationHandler(
                 counterInsect = backStackEntry.arguments?.getInt("counterInsectId")?:-1,
                 navigateToList = {
                     navHostController.popBackStack(route = Routes.LIST_COUNTER_RECORDS.route, inclusive = false)
-                }
+                },
+                stateActivity = stateActivity
             )
         }
 
@@ -56,7 +60,8 @@ fun NavigationHandler(
                 navigateToImageProfile = {
                     navHostController.popBackStack(route = Routes.LIST_COUNTER_RECORDS.route, inclusive = false)
                     navHostController.navigate(route = Routes.LOAD_IMAGE_PROFILE.route)
-                }
+                },
+                stateActivity = stateActivity
             )
         }
 
@@ -71,7 +76,8 @@ fun NavigationHandler(
                 navigateToListRecord = {
                     navHostController.popBackStack(route = Routes.LIST_COUNTER_RECORDS.route, inclusive = false)
                     viewModelHandler.imageProfileViewModel.setImageSelected(bitmap = it)
-                }
+                },
+                stateActivity = stateActivity
             )
         }
 
@@ -90,7 +96,8 @@ fun NavigationHandler(
                         .replace("{counterInsectId}", (0).toString())
 
                     navHostController.navigate(route = routeNavigation)
-                }
+                },
+                stateActivity = stateActivity
             )
         }
 
@@ -105,13 +112,15 @@ fun NavigationHandler(
                     navHostController.popBackStack(route = Routes.REGISTER_NEW_PROFILE.route, inclusive = true)
                     navHostController.navigate(Routes.LIST_COUNTER_RECORDS.route)
                 },
+                stateActivity = stateActivity
             )
         }
 
         composable(route = Routes.REPORTS.route) {
             ReportsView(
                 modifier = Modifier.fillMaxSize(),
-                navHostController = navHostController
+                navHostController = navHostController,
+                stateActivity = stateActivity
             )
         }
 

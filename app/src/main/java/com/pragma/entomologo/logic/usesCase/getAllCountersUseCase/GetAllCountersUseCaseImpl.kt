@@ -2,6 +2,8 @@ package com.pragma.entomologo.logic.usesCase.getAllCountersUseCase
 
 import com.pragma.entomologo.logic.datasources.counterRecordInsectDatasource.localDatasource.CounterRecordInsectLocalDatasource
 import com.pragma.entomologo.logic.datasources.insectDatasource.imageDatasource.InsectImageLocalDatasource
+import com.pragma.entomologo.logic.excepciones.LogicException
+import com.pragma.entomologo.logic.excepciones.TypeExceptions
 import com.pragma.entomologo.logic.models.CounterRecordInsectModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -15,10 +17,16 @@ class GetAllCountersUseCaseImpl @Inject constructor(
 ) : GetAllCountersUseCase {
 
     override fun invoke(): Flow<List<CounterRecordInsectModel>>  = flow {
+        checkPermissionsStorage()
         val list = counterRecordInsectLocalDatasource.getAll()
         asignImage(list = list)
         emit(list)
     }.flowOn(Dispatchers.IO)
+
+    private suspend fun checkPermissionsStorage() : Boolean {
+        if (!insectImageLocalDatasource.iHaveStoragePermissions()) throw LogicException(typeException = TypeExceptions.WITHOUT_PERMISSIONS_STORAGE)
+        return true
+    }
 
     private suspend fun asignImage(list: List<CounterRecordInsectModel>) {
         list

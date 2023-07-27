@@ -10,6 +10,7 @@ class IsEntomologistRegisteredUseCaseImpl @Inject constructor(
 ) : IsEntomologistRegisteredUseCase {
 
     override fun invoke(): Flow<Boolean> = flow {
-        emit(entomologistSPDatasource.getCurrentEntomologist() != null)
+        val currentEntomologist = entomologistSPDatasource.getCurrentEntomologist() != null
+        emit(currentEntomologist)
     }
 }

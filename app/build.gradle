@@ -69,6 +69,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-android:1.7.36'
     implementation 'org.slf4j:slf4j-nop:2.0.7'
     implementation 'com.google.android.gms:play-services-location:21.0.1'
+    implementation 'com.google.accompanist:accompanist-permissions:0.31.5-beta'
     kapt "com.google.dagger:hilt-compiler:2.46.1"
 
     implementation 'androidx.compose.runtime:runtime-livedata:1.4.3'

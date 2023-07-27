@@ -30,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pragma.entomologo.R
 import com.pragma.entomologo.logic.excepciones.LogicException
 import com.pragma.entomologo.logic.models.InsectModel
+import com.pragma.entomologo.ui.activities.ActivityState
 import com.pragma.entomologo.ui.dialogs.errorDialog.ErrorDialogView
 import com.pragma.entomologo.ui.theme.EntomologoTheme
 import com.pragma.entomologo.ui.utils.extentions.getBitmap
@@ -56,6 +57,7 @@ fun CounterInsectsViewPreview() {
                 .background(color = MaterialTheme.colorScheme.secondaryContainer)
         ) {
             val constraintsId = createRef()
+            val stateActivity : MutableState<ActivityState> = remember { mutableStateOf(value = ActivityState.RESUME) }
             CounterInsectsView(modifier = Modifier.constrainAs(constraintsId) {
                 bottom.linkTo(parent.bottom)
                 end.linkTo(parent.end)
@@ -96,6 +98,7 @@ fun CounterInsectsViewPreview() {
 
                 },
                 navigateToList = {},
+                stateActivity = stateActivity
             )
         }
     }
@@ -107,7 +110,8 @@ fun CounterInsectsView(
     insectId: Int = -1,
     counterInsect: Int = -1,
     viewModel: CounterInsectsViewModel = hiltViewModel<CounterInsectsViewModelImpl>(),
-    navigateToList: () -> Unit
+    navigateToList: () -> Unit,
+    stateActivity : MutableState<ActivityState>,
 ) {
     //region stateObserver
     val currentState by viewModel.uiState.collectAsState(initial = CounterInsectsViewModel.CounterInsectsUIState())
@@ -329,13 +333,15 @@ fun HandlerCounter(
             val guidelineStartRemoveButton = createGuidelineFromStart(0.54f)
             val guidelineTopRemoveButton = createGuidelineFromTop(separationVerticalButtonRemove)
             ButtonRemove(
-                modifier = Modifier.constrainAs(removeId) {
-                    bottom.linkTo(guidelineBottomRemoveButton)
-                    end.linkTo(guidelineEndRemoveButton)
-                    start.linkTo(guidelineStartRemoveButton)
-                    top.linkTo(guidelineTopRemoveButton)
-                    height = Dimension.fillToConstraints
-                }.aspectRatio(1f),
+                modifier = Modifier
+                    .constrainAs(removeId) {
+                        bottom.linkTo(guidelineBottomRemoveButton)
+                        end.linkTo(guidelineEndRemoveButton)
+                        start.linkTo(guidelineStartRemoveButton)
+                        top.linkTo(guidelineTopRemoveButton)
+                        height = Dimension.fillToConstraints
+                    }
+                    .aspectRatio(1f),
                 onClick = viewModel::removeInsectFromCounter
             )
             //endregion

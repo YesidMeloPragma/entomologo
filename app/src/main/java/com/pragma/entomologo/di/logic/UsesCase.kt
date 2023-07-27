@@ -22,6 +22,8 @@ import com.pragma.entomologo.logic.usesCase.getInsectWithImageByIdUseCase.GetIns
 import com.pragma.entomologo.logic.usesCase.getInsectWithImageByIdUseCase.GetInsectWithImageByIdUseCaseImpl
 import com.pragma.entomologo.logic.usesCase.iHaveGPSPermissionUseCase.IHaveGPSPermissionUseCase
 import com.pragma.entomologo.logic.usesCase.iHaveGPSPermissionUseCase.IHaveGPSPermissionUseCaseImpl
+import com.pragma.entomologo.logic.usesCase.iHaveStoragePermissionUseCase.IHaveStoragePermissionUseCase
+import com.pragma.entomologo.logic.usesCase.iHaveStoragePermissionUseCase.IHaveStoragePermissionUseCaseImpl
 import com.pragma.entomologo.logic.usesCase.isEntomologistRegisteredUseCase.IsEntomologistRegisteredUseCase
 import com.pragma.entomologo.logic.usesCase.isEntomologistRegisteredUseCase.IsEntomologistRegisteredUseCaseImpl
 import com.pragma.entomologo.logic.usesCase.registerEntomologistUseCase.RegisterEntomologistUseCase
@@ -88,6 +90,13 @@ class UsesCase {
         gpsDatasource: GPSDatasource
     ): IHaveGPSPermissionUseCase = IHaveGPSPermissionUseCaseImpl(
         gpsDatasource = gpsDatasource
+    )
+
+    @Provides
+    fun provideIHaveStoragePermissionUseCase(
+        entomologistImageDatasource: EntomologistImageDatasource
+    ): IHaveStoragePermissionUseCase = IHaveStoragePermissionUseCaseImpl(
+        entomologistImageDatasource = entomologistImageDatasource
     )
 
     @Provides

@@ -24,26 +24,28 @@ abstract class LoadImageProfileViewModel : ViewModel() {
 
     data class StateUI(
         val loading: StatusUI = StatusUI.START,
-        val bitmap: Bitmap? = null
+        val havePermissionGallery : Boolean = false,
+        val bitmap: Bitmap? = null,
     )
 
     abstract fun checkPermissions()
     abstract fun loadView()
-    abstract fun requestPermissionsFirstStep()
     abstract fun restartStateUI()
     abstract fun startStateUI()
+    abstract fun updateBitmap(bitmap: Bitmap?)
 
     protected fun updateStatus(
         loading: StatusUI = stateUI.value.loading,
-        imageBase64: Bitmap?= stateUI.value.bitmap
+        havePermissionGallery : Boolean= stateUI.value.havePermissionGallery,
+        imageBase64: Bitmap?= stateUI.value.bitmap,
     ) {
         viewModelScope.launch {
             stateUI.emit(StateUI(
+                bitmap = imageBase64,
                 loading = loading,
-                bitmap = imageBase64
+                havePermissionGallery = havePermissionGallery,
             ))
         }
     }
 
-    abstract fun userHasPermissions()
 }

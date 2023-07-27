@@ -9,8 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,71 +24,18 @@ import androidx.constraintlayout.compose.Dimension
 import com.pragma.entomologo.logic.models.CounterRecordInsectModel
 import com.pragma.entomologo.logic.models.GeoLocationModel
 import com.pragma.entomologo.logic.models.InsectModel
+import com.pragma.entomologo.ui.activities.ActivityState
+import com.pragma.entomologo.ui.dialogs.errorDialog.ErrorDialogView
 import com.pragma.entomologo.ui.theme.EntomologoTheme
 import com.pragma.entomologo.ui.views.app.NewCounterView
 import com.pragma.entomologo.ui.views.app.imageProfile.ImageProfileView
 import com.pragma.entomologo.ui.views.app.imageProfile.viewModel.ImageProfileViewModel
 import com.pragma.entomologo.ui.views.customs.dialogs.progressDialog.ProgressDialog
+import com.pragma.entomologo.ui.views.requestPermisions.EnablePermissionsNecessariesInConfigApp
 import com.pragma.entomologo.ui.views.speciesRecordsView.viewModel.SpeciesRecordsViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO, device = Devices.PHONE)
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, device = Devices.PHONE)
-@Composable
-fun SpeciesRecordsViewPreview() {
-    EntomologoTheme {
-        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val constraintsId = createRef()
-
-            //region list counters
-            val list = emptyList<CounterRecordInsectModel>().toMutableList()
-            for(counter in 1..10) {
-                list.add(
-                    CounterRecordInsectModel(
-                        id= counter.toLong(),
-                        insect = InsectModel( specieName = "Hormiga $counter", urlPhoto = "", moreInformation = "aqui $counter"),
-                        geoLocation = GeoLocationModel(lat = 1.11, lng = 2.22, city = ""),
-                        comment = "Un comentario $counter",
-                        count = counter,
-                    )
-                )
-            }
-            //endregion
-
-            val uiState = MutableStateFlow(value =SpeciesRecordsViewModel.StatusUISpeciesRecord(list = list))
-            val uiStateImageProfile = MutableStateFlow(value = ImageProfileViewModel.ImageProfileUIState())
-
-            SpeciesRecordsView(modifier = Modifier.constrainAs(constraintsId) {
-                bottom.linkTo(parent.bottom)
-                end.linkTo(parent.end)
-                start.linkTo(parent.start)
-                top.linkTo(parent.top)
-                width = Dimension.fillToConstraints
-                height = Dimension.fillToConstraints
-            },
-                viewModel = object : SpeciesRecordsViewModel() {
-                    override fun getStateUI(): StateFlow<StatusUISpeciesRecord> = uiState
-
-                    override fun loadListCounters() { Log.i("err", "") }
-                },
-                imageProfileViewModel = object : ImageProfileViewModel() {
-                    override fun loadImage() {
-                        Log.i("Informacion", "accion")
-                    }
-
-                    override fun setImageSelected(bitmap: Bitmap?) {
-                        Log.i("Informacion", "accion")
-                    }
-
-                    override fun getStateUI(): StateFlow<ImageProfileUIState> = uiStateImageProfile
-                },
-                navigateToImageProfile = {},
-                navigateToRegisterNewInsect = {}
-            )
-        }
-    }
-}
+import kotlin.system.exitProcess
 
 @Composable
 fun SpeciesRecordsView(
@@ -92,15 +43,20 @@ fun SpeciesRecordsView(
     viewModel: SpeciesRecordsViewModel,
     imageProfileViewModel: ImageProfileViewModel,
     navigateToImageProfile: () -> Unit,
-    navigateToRegisterNewInsect: () -> Unit
+    navigateToRegisterNewInsect: () -> Unit,
+    stateActivity : MutableState<ActivityState>,
 ) {
 
     //region variables
     val stateUI by viewModel.getStateUI().collectAsState(initial = SpeciesRecordsViewModel.StatusUISpeciesRecord())
+    val showRequestPermission = remember { mutableStateOf(false) }
     logicView(
         statusUI = stateUI,
-        viewModel = viewModel
+        viewModel = viewModel,
+        stateActivity = stateActivity
     )
+    SideEffect {
+    }
     //endregion
     ConstraintLayout(modifier = modifier.background(color = MaterialTheme.colorScheme.secondaryContainer)) {
         val (imageId, newCounterId, listCounters) = createRefs()
@@ -188,16 +144,128 @@ fun SpeciesRecordsView(
             ProgressDialog()
         }
         //endregion
+
+        //region showError
+        if (stateUI.loading == SpeciesRecordsViewModel.StatusLoading.SHOW_ERROR) {
+            ErrorDialogView(
+                onDismiss = {
+                    viewModel.requestPermissionsStorage()
+                    showRequestPermission.value = true
+                },
+                exception = stateUI.logicException!!,
+                onCancel =  {
+                    viewModel.requestPermissionsStorage()
+                    exitProcess(0)
+                }
+            )
+        }
+        //endregion
+
+        //region request permission
+        if(stateUI.loading == SpeciesRecordsViewModel.StatusLoading.REQUEST_PERMISSIONS_STORAGE) {
+            EnablePermissionsNecessariesInConfigApp(
+                showDialog = showRequestPermission,
+                actionCancel = { exitProcess(0) },
+                actionDismiss = { viewModel.requestPermissionsStorage()}
+            )
+        }
+        //endregion
     }
 }
 
 private fun logicView(
     statusUI: SpeciesRecordsViewModel.StatusUISpeciesRecord,
+    viewModel: SpeciesRecordsViewModel,
+    stateActivity : MutableState<ActivityState>,
+) {
+    handlerStateComposable(statusUI = statusUI, viewModel = viewModel)
+    handlerStateComposableBasedInActivity(
+        stateActivity = stateActivity,
+        viewModel = viewModel
+    )
+}
+
+private fun handlerStateComposable(
+    statusUI: SpeciesRecordsViewModel.StatusUISpeciesRecord,
     viewModel: SpeciesRecordsViewModel
 ) {
-    when(statusUI.loading) {
-        SpeciesRecordsViewModel.StatusLoading.PRELOAD -> viewModel.loadListCounters()
-        SpeciesRecordsViewModel.StatusLoading.LOADING,
-        SpeciesRecordsViewModel.StatusLoading.LOADED -> {println(" state: ${statusUI.loading}")}
+
+    if (statusUI.loading == SpeciesRecordsViewModel.StatusLoading.PRELOAD) {
+        viewModel.loadListCounters()
+        return
+    }
+    println(" state: ${statusUI.loading}")
+
+}
+
+private fun handlerStateComposableBasedInActivity(
+    stateActivity : MutableState<ActivityState>,
+    viewModel: SpeciesRecordsViewModel,
+) {
+    if(stateActivity.value != ActivityState.PAUSE) return
+    viewModel.changePreloadStatus()
+}
+
+
+//region preview
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO, device = Devices.PHONE)
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, device = Devices.PHONE)
+@Composable
+fun SpeciesRecordsViewPreview() {
+    EntomologoTheme {
+        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+            val constraintsId = createRef()
+            val stateActivity : MutableState<ActivityState> = remember { mutableStateOf(value = ActivityState.RESUME) }
+            //region list counters
+            val list = emptyList<CounterRecordInsectModel>().toMutableList()
+            for(counter in 1..10) {
+                list.add(
+                    CounterRecordInsectModel(
+                        id= counter.toLong(),
+                        insect = InsectModel( specieName = "Hormiga $counter", urlPhoto = "", moreInformation = "aqui $counter"),
+                        geoLocation = GeoLocationModel(lat = 1.11, lng = 2.22, city = ""),
+                        comment = "Un comentario $counter",
+                        count = counter,
+                    )
+                )
+            }
+            //endregion
+
+            val uiState = MutableStateFlow(value =SpeciesRecordsViewModel.StatusUISpeciesRecord(list = list))
+            val uiStateImageProfile = MutableStateFlow(value = ImageProfileViewModel.ImageProfileUIState())
+
+            SpeciesRecordsView(modifier = Modifier.constrainAs(constraintsId) {
+                bottom.linkTo(parent.bottom)
+                end.linkTo(parent.end)
+                start.linkTo(parent.start)
+                top.linkTo(parent.top)
+                width = Dimension.fillToConstraints
+                height = Dimension.fillToConstraints
+            },
+                viewModel = object : SpeciesRecordsViewModel() {
+                    override fun requestPermissionsStorage() {Log.i("err", "")}
+                    override fun changePreloadStatus() {Log.i("err", "")}
+
+                    override fun getStateUI(): StateFlow<StatusUISpeciesRecord> = uiState
+
+                    override fun loadListCounters() { Log.i("err", "") }
+                },
+                imageProfileViewModel = object : ImageProfileViewModel() {
+                    override fun loadImage() {
+                        Log.i("Informacion", "accion")
+                    }
+
+                    override fun setImageSelected(bitmap: Bitmap?) {
+                        Log.i("Informacion", "accion")
+                    }
+
+                    override fun getStateUI(): StateFlow<ImageProfileUIState> = uiStateImageProfile
+                },
+                navigateToImageProfile = {},
+                navigateToRegisterNewInsect = {},
+                stateActivity = stateActivity
+            )
+        }
     }
 }
+//endregion

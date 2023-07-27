@@ -6,6 +6,8 @@ import javax.inject.Inject
 class EntomologistImageDatasourceImpl @Inject constructor(
     private val imageAppGallery: ImageAppGallery
 ) : EntomologistImageDatasource {
+    override suspend fun iHaveStoragePermissions(): Boolean
+        = imageAppGallery.iHaveStoragePermissions()
 
     override suspend fun loadImageProfile(path: String): String? = imageAppGallery.getImageStringBase64(path = path)
 
