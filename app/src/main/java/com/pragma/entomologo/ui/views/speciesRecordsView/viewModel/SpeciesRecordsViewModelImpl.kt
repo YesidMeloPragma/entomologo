@@ -2,11 +2,8 @@ package com.pragma.entomologo.ui.views.speciesRecordsView.viewModel
 
 import androidx.lifecycle.viewModelScope
 import com.pragma.entomologo.logic.excepciones.LogicException
-import com.pragma.entomologo.logic.models.CounterRecordInsectModel
 import com.pragma.entomologo.logic.usesCase.getAllCountersUseCase.GetAllCountersUseCase
 import com.pragma.entomologo.ui.dispatchers.DispatcherProvider
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,7 +13,7 @@ class SpeciesRecordsViewModelImpl @Inject constructor(
     private val getAllCountersUseCase: GetAllCountersUseCase
 ) : SpeciesRecordsViewModel() {
 
-    private val stateUI = MutableStateFlow(value = StatusUISpeciesRecord())
+
     override fun requestPermissionsStorage() {
         viewModelScope.launch(dispatcherProvider.io()) {
             updateStateUI(
@@ -34,8 +31,6 @@ class SpeciesRecordsViewModelImpl @Inject constructor(
             )
         }
     }
-
-    override fun getStateUI(): StateFlow<StatusUISpeciesRecord> = stateUI
 
     override fun loadListCounters() {
         viewModelScope.launch(dispatcherProvider.io()) {
@@ -56,20 +51,6 @@ class SpeciesRecordsViewModelImpl @Inject constructor(
                 )
             }
 
-        }
-    }
-
-    private fun updateStateUI(
-        loading :  StatusLoading = stateUI.value.loading,
-        list: List<CounterRecordInsectModel> = stateUI.value.list,
-        logicException: LogicException? = stateUI.value.logicException
-    ) {
-        viewModelScope.launch(dispatcherProvider.io()) {
-            stateUI.emit(StatusUISpeciesRecord(
-                loading = loading,
-                list = list,
-                logicException = logicException
-            ))
         }
     }
 }

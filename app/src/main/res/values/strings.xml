@@ -32,4 +32,6 @@
     <string name="enable_permissions_ubication">Captura la ubicación geográfica de la muestra al momento de adicionarla a la lista de muestras.</string>
     <string name="enable">Habilitar</string>
     <string name="without_some_permission">Si falta algun permiso no puede funcionar correctamente la aplicacion. si das en cancelar la aplicacion se cerrara de manera automatica por falta permisos</string>
+    <string name="informes">Informes</string>
+    <string name="registros">Registros</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.pragma.entomologo.ui.views.customs.buttons
 
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
@@ -57,7 +58,8 @@ fun CustomRoundedButtonsWithElevation(
         colors = ButtonDefaults.buttonColors(
             containerColor = colorBackground,
             contentColor = colorText
-        )
+        ),
+        border = BorderStroke(width = (0.1).dp, MaterialTheme.colorScheme.outline),
     ) {
         Text(text= text, style = MaterialTheme.typography.labelLarge.copy(
             fontWeight = FontWeight.W500

@@ -43,12 +43,15 @@ fun CustomButtomOutline(modifier: Modifier, text: String, onClick: () -> Unit) {
     OutlinedButton(
         modifier = modifier,
         onClick = onClick,
-        border = BorderStroke(width = 1.dp, MaterialTheme.colorScheme.outline),
+        border = BorderStroke(width = (0.1).dp, MaterialTheme.colorScheme.outline),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            contentColor = MaterialTheme.colorScheme.primary
         )
     ) {
-        Text(text= text, style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.W500))
+        Text(
+            text= text,
+            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.W500)
+        )
     }
 }

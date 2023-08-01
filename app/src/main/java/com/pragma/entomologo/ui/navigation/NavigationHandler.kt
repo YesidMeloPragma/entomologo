@@ -61,7 +61,11 @@ fun NavigationHandler(
                     navHostController.popBackStack(route = Routes.LIST_COUNTER_RECORDS.route, inclusive = false)
                     navHostController.navigate(route = Routes.LOAD_IMAGE_PROFILE.route)
                 },
-                stateActivity = stateActivity
+                stateActivity = stateActivity,
+                navigateToReports = {
+                    navHostController.popBackStack(route = Routes.LIST_COUNTER_RECORDS.route, inclusive = false)
+                    navHostController.navigate(route = Routes.REPORTS.route)
+                }
             )
         }
 
