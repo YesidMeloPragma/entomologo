@@ -26,6 +26,8 @@ import com.pragma.entomologo.ui.views.loadImageProfile.viewModel.LoadImageProfil
 import com.pragma.entomologo.ui.views.loadImageProfile.viewModel.LoadImageProfileViewModelImpl
 import com.pragma.entomologo.ui.views.registerEntomologistView.viewModel.RegisterEntomologyViewModel
 import com.pragma.entomologo.ui.views.registerEntomologistView.viewModel.RegisterEntomologyViewModelImpl
+import com.pragma.entomologo.ui.views.reports.viewModel.ReportsViewModel
+import com.pragma.entomologo.ui.views.reports.viewModel.ReportsViewModelImpl
 import com.pragma.entomologo.ui.views.splashView.viewModel.SplashViewModel
 import com.pragma.entomologo.ui.views.splashView.viewModel.SplashViewModelImpl
 import com.pragma.entomologo.ui.views.speciesRecordsView.viewModel.SpeciesRecordsViewModel
@@ -113,6 +115,13 @@ class ViewModels {
     ) : SpeciesRecordsViewModel = SpeciesRecordsViewModelImpl(
         dispatcherProvider = dispatcherProvider,
         getAllCountersUseCase = getAllCountersUseCase
+    )
+
+    @Provides
+    fun provideReportsViewModel(
+        dispatcherProvider: DispatcherProvider
+    ): ReportsViewModel = ReportsViewModelImpl(
+        dispatcherProvider = dispatcherProvider
     )
 
     @Provides

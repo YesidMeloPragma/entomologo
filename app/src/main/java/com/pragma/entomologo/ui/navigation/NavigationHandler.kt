@@ -123,7 +123,6 @@ fun NavigationHandler(
         composable(route = Routes.REPORTS.route) {
             ReportsView(
                 modifier = Modifier.fillMaxSize(),
-                navHostController = navHostController,
                 stateActivity = stateActivity
             )
         }
